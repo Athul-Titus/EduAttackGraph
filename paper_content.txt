@@ -1,0 +1,1129 @@
+Total pages: 17
+
+============================================================
+PAGE 1
+============================================================
+3038 IEEEINTERNETOFTHINGSJOURNAL,VOL.13,NO.2,15JANUARY2026
+LLM-Assisted Security Vulnerability Analysis for
+Educational Websites: Risk Identification via
+LLM-EduAttackGraph
+Chao Liu , Member, IEEE, Jiaxing Liu , Boxi Chen , Student Member, IEEE, Daxin Zhu ,
+Ching-Chun Chang , Member, IEEE, and Chin-Chen Chang , Fellow, IEEE
+Abstract—The digital transformation of educational sys- EduAttackGraph with several existing large model penetration
+tems has significantly optimized administrative workflows and toolstodemonstratetheperformanceofLLM-EduAttackGraph.
+enhanced the user experience for educators and learners. Such strengths include its low demand for hardware resources
+However, the accumulation of sensitive personal data on edu- and having undergone empirical verification.
+cational websites has made them prime targets for cyber
+Index Terms—Cybersecurity, educational websites, LLM-
+threats. Despite growing awareness of these security challenges,
+EduAttackGraph, sensitive personal data.
+the technical roots of vulnerabilities within such platforms
+remaininsufficientlyexplored.Toaddressthisgap,weintroduce
+I. INTRODUCTION
+LLM-EduAttackGraph, a specialized tool designed to assist ILLEGAL actors have various motives for attacking net-
+in vulnerability detection by leveraging large language models
+(LLMs). Rather than serving as a fully automated monitoring works,suchasacquiringandsellingprivateinformationfor
+system, LLM-EduAttackGraph operates as a human-in-the- profit.Cyberattacksmaysometimeshavepoliticalandmilitary
+loop assistant, combining expert knowledge with the analytical intentions [23]. In the medical field, personal medical infor-
+capabilities of LLMs to help identify potential penetration
+mation (including patient full names, dates of birth, detailed
+paths based on network fingerprint information. Using LLM-
+diagnostic reports, specific disease and treatment histories,
+EduAttackGraph, we have so far identified 961 penetration
+vulnerabilitiesacrosseducationalwebsitesinmainlandChina—a medication details, and records of genetic diseases within the
+number that continues to grow as analysis progresses. These family, among other key data) is considered sensitive. The
+findings demonstrate the tool’s practical value in augmenting leakageofpersonalmedicalinformationthreatensthepersonal
+cybersecurity research and efforts. Our in-depth analysis of
+dignity of patients and basic rights such as individual rights
+the discovered vulnerabilities reveals that limited developer
+[5]. In the manufacturing sector, manufacturing machines are
+experience and a heavy dependence on outsourced website
+development are key contributing factors. By shedding light increasinglyequippedwithsensorsandconnectedviawireless
+on these root causes, our research offers actionable strategies networks or wired Ethernet, making digital manufacturing
+and insights aimed at improving the cybersecurity posture of systems more vulnerable to cyberattacks [37].
+educational platforms and ensuring the sustainable development Educationalwebsitesrefertotheofficialwebsitesofprimary
+of online education. Furthermore, we have compared LLM-
+and secondary schools, universities, and education bureaus.
+Educational websites primarily serve students, teachers, and
+Received15August2025;revised14October2025;accepted7November other personnel. As an indispensable part of the modern
+2025. Date of publication 19 November 2025; date of current version
+educational system, educational websites are a reflection of
+8 January 2026. This work was supported in part by the 2025 Xiamen
+Overseas Returnee Research Project under the Grant titled, in part by the the digitization and modernization of education. The spread
+FujianProvincialKeyTechnologicalInnovationResearch&Industrialization of COVID-19 has accelerated the transition of the higher
+Project under Grant 2024XQ017, in part by the Sixth batch of Quanzhou education system from offline to online [20], advancing the
+City’sintroductionofhigh-leveltalentteamprojects2,inpartbytheNatural
+ScienceFoundationofFujianProvincialScienceandTechnologyDepartment process of digitalization of higher education. Educational
+underGrant2023H6034,andinpartbythe2025CollegeStudentInnovation websites store a large amount of personal information and
+and Entrepreneurship Training Program of Xiamen Medical College under
+othercoredata,whichtempthackerstotargethighereducation
+Project 202512631013 and Project 202512631034. (Chao Liu, Jiaxing Liu,
+and Boxi Chen contributed equally to this work.) (Corresponding authors: institutions as primary targets [17]. In recent years, there has
+DaxinZhu;Chin-ChenChang.) beenanincreasingnumberofinformationleakageincidentsin
+ChaoLiuiswiththeDepartmentofPublicHealthandMedicalTechnology,
+higher education institutions. Domestically, more than 20000
+XiamenMedicalCollege,Xiamen361023,China.
+JiaxingLiuiswithSchoolofAdvancedManufacturing,FuzhouUniversity, students’ information at Zhengzhou Sias University [40] was
+Quanzhou362251,China. leaked, and tens of thousands of teachers’ and students’
+Boxi Chen is with Faculty of Applied Sciences, Macao Polytechnic
+informationfromauniversityinJiangxi[25]wassoldabroad.
+University,Macao,China
+DaxinZhuiswiththeSchoolofMathematicsandComputerScience,Fujian Internationally, universities such as Stanford University [10],
+Provincial Key Laboratory of Data-Intensive Computing, Fujian University QueenslandUniversityofTechnology[4],andWesternSydney
+Laboratory of Intelligent Computing and Information Processing, Quanzhou
+University [3] have all experienced varying degrees of data
+NormalUniversity,Quanzhou362046,China(e-mail:dex@qztc.edu.cn).
+Ching-Chun Chang is with the National Institute of Informatics, Tokyo breaches. Information leakage not only brings direct troubles
+101-8430,Japan. and risks to the users of the affected institutions but also
+Chin-Chen Chang is with Feng Chia University, Taichung 40724, Taiwan
+causes serious damage to the reputation and trustworthiness
+(e-mail:ccc@o365.fcu.edu.tw).
+DigitalObjectIdentifier10.1109/JIOT.2025.3631562 of educational institutions. Therefore, the data information
+2327-4662©2025IEEE.Allrightsreserved,includingrightsfortextanddatamining,andtrainingofartificialintelligenceand
+similartechnologies.Personaluseispermitted,butrepublication/redistributionrequiresIEEEpermission.
+Seehttps://www.ieee.org/publications/rights/index.htmlformoreinformation.
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 2
+============================================================
+LIUetal.:LLM-ASSISTEDSECURITYVULNERABILITYANALYSISFOREDUCATIONALWEBSITES 3039
+security of educational websites, especially universities, has trol components, while token tampering compromises session
+become an issue that requires in-depth research. management mechanisms. Finally, sensitive information dis-
+Despite ongoing advancements in cybersecurity, existing closure often results from misconfigurations or insecure data
+penetration testing methods for educational websites remain storage practices. Throughout the testing, we strictly adhered
+largely reliant on the personal expertise and intuition of to principles of legality and compliance, ensuring that all
+securityprofessionals.Thesemanualapproachesofteninvolve activities were authorized. Discovered vulnerabilities were
+repetitive, time-consuming, and tedious tasks such as finger- promptly reported to the appropriate institutions along with
+print collection, vulnerability matching, and exploitation path mitigation recommendations. Based on our analysis of real-
+analysis.Therelianceonhumanjudgmentintroducesinconsis- world security flaws, we observed the following major issues.
+tenciesintestingqualityandlimitsscalability,especiallywhen 1) Many systems suffer from unpatched components or
+auditing a large number of websites. Moreover, many existing outdatedframeworks,leavingthemvulnerabletoknown
+vulnerabilitydetectionsystemsareeithertoorigid—relyingon exploits.
+rule-based engines with limited adaptability—or too generic, 2) Numerous educational institutions outsource website
+lacking contextual understanding of educational platforms’ development to third-party vendors or rely heavily on
+unique structural and security characteristics. These systems pre-built frameworks. In many cases, default creden-
+struggle to efficiently integrate historical vulnerability data, tials were not changed post-deployment—either due to
+interpret nuanced attack surfaces, or generate meaningful oversight by the development company or a lack of
+insights beyond surface-level scanning. As a result, analysts cybersecurity expertise within the institution—leading
+may overlook latent vulnerabilities or spend disproportionate to common access vulnerabilities across multiple sites
+effort on low-risk components. developed by the same vendor.
+Weadoptedacoordinatedvulnerabilitydisclosureapproach 3) Coredigitalassetsaremorepronetologicalvulnerabili-
+toconductpenetrationtestingonuniversitywebsites,including ties and vertical privilege escalation, whereas peripheral
+those of first- and second-level colleges within universities, systems often exhibit weak password issues.
+as well as websites of education bureaus in selected regions 4) A school’s academic prestige does not necessarily cor-
+of mainland China. While our testing focused exclusively on relate with its cybersecurity maturity. Even institutions
+institutions within mainland China due to legal and ethical with strong reputations are vulnerable to data leakage
+constraints, we also discuss the broader applicability of our and other critical risks.
+findings to educational websites in other countries in Sec- LLM-EduAttackGraph’s core design philosophy lies in a
+tion V. In total, we identified more than 961 vulnerabilities decoupled architecture of offline knowledge base + online
+across educational websites. Among these, 39.2% were found retrieval and reasoning. Currently, there are several LLM-
+in teaching-oriented universities offering only undergradu- based automated penetration testing models in the field of
+ate programs, while the remaining 60.8% were distributed cybersecurity. PentestGPT has effectively validated the appli-
+acrossothertypesofeducationalinstitutions.Thesamplealso cationpotentialandtechnicalfeasibilityofLLMsinautomated
+includes several highly recognized universities in mainland penetration testing tasks by designing a multistage execution
+China. To support the testing process, we developed LLM- process covering reasoning, generation, and parsing modules,
+EduAttackGraph, a practical and effective tool that integrates and integrating experimental verification [12]. AutoAttacker
+largelanguagemodels(LLMs)toassistinidentifyingpotential has achieved a high post-penetration attack success rate in
+vulnerabilities. The process begins with website fingerprint simulated enterprise network environments by constructing
+scanning,whichcollectsstructuralandcomponent-levelmeta- modular agents and introducing the RAG mechanism based
+data. These fingerprints are then fed into the core of a on experience reuse [39]. MAPTA, as a model specifically
+pretrainedLLM-basedsystem,which,byreferencinghistorical developed for web application penetration testing, relies on
+vulnerabilitydata,inferslikelypenetrationpathsandpotential a multiagent architecture design and an end-to-end proof-
+weaknesses. Rather than performing full automation, LLM- of-concept (PoC) execution mechanism, which effectively
+EduAttackGraph operates in a human-in-the-loop manner reduces interfering information during the vulnerability detec-
+to support expert analysis. As illustrated in Fig. 1, LLM- tion process [11].
+EduAttackGraph is designed to assist in penetration testing However, the aforementioned models have limitations
+acrosssixmajorcategoriesofvulnerabilitiescommonlyfound and fail to be directly adapted to the needs of educational
+in educational websites: (cid:79) 1 remote command/code execution; network scenarios. First, like the comprehensive penetration
+(cid:79) 2 SQLinjection;(cid:79) 3 weakpasswords;(cid:79) 4 unauthorizedaccess; framework of AutoAttacker, the complex multiagent
+(cid:79) 5 token tampering; and (cid:79) 6 sensitive information disclosure. interaction and real-time tool calling lead to extremely high
+These six categories correspond to different attack surfaces instantaneous GPU/CPU resource consumption, making
+within the architecture of educational web systems. For large-scale deployment in educational institutions with
+instance, SQL injection primarily targets the database layer, limited computing power unfeasible. Second, these models
+exploiting improper input handling in query construction. areoriginallydesignedforend-to-endattackchainverification
+Remote code execution (RCE) typically affects the applica- of vulnerabilities, and their inherent offensive nature carries
+tion layer, enabling attackers to execute arbitrary commands abuse risks, which may easily trigger security alerts in
+on the server. Weak passwords and unauthorized access are campus networks with strict compliance requirements. Third,
+commonly associated with authentication and access con- the internal state transitions and decision-making processes
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 3
+============================================================
+3040 IEEEINTERNETOFTHINGSJOURNAL,VOL.13,NO.2,15JANUARY2026
+TABLEI
+MODELATTRIBUTECOMPARISON— DENOTESFULLSUPPORTAND DENOTESSUPPORT
+of multiagent systems are akin to a black box, resulting it has undergone extensive testing in the real-world environ-
+in poor interpretability and hindering administrators from ments of Chinese educational websites and achieved specific,
+conducting audits, reviews, and trust analysis of results. quantifiable outcomes, which confirms its effectiveness.
+In contrast, LLM-EduAttackGraph does not pursue fully Contributions: To summarize, our contributions are as fol-
+automated attacks; instead, it is positioned as an intelligent lows.
+auxiliary analysis system, which maintains high targeting 1) We propose LLM-EduAttackGraph, a novel human-
+while achieving low resource consumption, inherent defense in-the-looppenetrationtestingframeworkthatintegrates
+orientation, and a clear, traceable decision-making process. fingerprintscanningwithLLMstoassistinthediscovery
+The differences in key attributes between LLM- andreasoningofvulnerabilitiesineducationalwebsites.
+EduAttackGraph, PentestGPT [12], AutoAttacker [39], The system automates the fingerprint extraction phase
+and MAPTA [11] are presented in Table I. The attributes of and leverages pretrained LLMs to analyze structural
+LLM-EduAttackGraph are as follows: features and historical patterns, generating potential
+Designed Specifically for Web Penetration: LLM- attack paths and identifying likely vulnerabilities. This
+EduAttackGraph employs a Web application-oriented approach addresses the limitations of traditional expert-
+security analysis paradigm. Its core components—fingerprint driven methods, reducing repetitive workload while
+scanning and knowledge base retrieval—are all constructed improving coverage and scalability.
+aroundthecorecharacteristicsofWebassets(suchasHTTP/S
+2) Utilizing LLM-EduAttackGraph, we conducted a
+services, open ports, URL structures, and software identifiers, large-scale penetration testing study across educational
+among others). websites in mainland China and uncovered over 961
+TheApplicationofLLM-EduAttackGraphDoesNotDirectly real-world vulnerabilities. All issues were responsibly
+Pose Risks to the Web: LLM-EduAttackGraph workflow disclosed to the corresponding institutions, many of
+terminatesatthegenerationofvulnerabilityanalysisandreme- which expressed appreciation and formally recognized
+diation recommendations and does not involve the execution our contributions. The effectiveness of our system in
+ofactualexploitpayloads.Suchapurelydefensivepositioning identifying practical security issues demonstrates its
+eliminates the possibility of the tool being abused. utility in real-world cybersecurity applications.
+Facilitating Large-Scale Deployment With Controllable 3) Based on the vulnerabilities identified, we performed a
+Costs: Benefiting from the decoupled architecture of offline detailed analysis revealing several systemic problems.
+knowledge base construction + online lightweight reason- We observed that core digital assets are more prone to
+ing, LLM-EduAttackGraph pre-positions the computationally logical flaws and privilege escalation, while peripheral
+intensive vectorization process. Consequently, the online ser- assets commonly suffer from weak password config-
+vices can operate with only minimal computing resources. urations. Additionally, many vulnerabilities stem from
+High Interpretability of the Decision-Making Process: The insufficient in-house development expertise and reliance
+entire analytical chain of LLM-EduAttackGraph is clear and on third-party vendors who reuse insecure components
+transparent. Security administrators can easily trace back across multiple websites. We offer targeted recommen-
+which fingerprint features triggered the retrieval of specific dations to help educational institutions mitigate these
+historical vulnerabilities and understand the context on which root causes and strengthen their security posture.
+the LLM generates remediation recommendations. This inter- 4) We have compared LLM-EduAttackGraph with sev-
+pretability greatly enhances the credibility of the results. eral existing large model penetration tools to demon-
+Superior Real-Time Knowledge Updating: LLM- strate its performance. Such advantages of LLM-
+EduAttackGraph constructs a vector database from EduAttackGraphinclude:beingspecificallydesignedfor
+continuously updated historical vulnerability repositories Web penetration, posing no direct threat to the Web
+(e.g., Awesome-POC), which enables the timely integration when the model is applied, having low demand for
+of the latest vulnerability knowledge. In contrast, models that hardware resources, model decisions are traceable, the
+require calling external static tools are still constrained by model’s knowledge base being updated quickly, and
+explicit update mechanisms. Their synchronization cycles are having undergone empirical verification.
+typically significantly longer than the response time of the
+models’ internal knowledge, resulting in detection lag when II. RELATEDWORK
+confronting newly disclosed vulnerabilities. Research on addressing information leakage in educational
+Real-World Validated Effectiveness: LLM-EduAttackGraph websites has been extensive. Bongiovanni systematically syn-
+is not confined to the theoretical or laboratory stage; instead, thesized studies on information security in higher education
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 4
+============================================================
+LIUetal.:LLM-ASSISTEDSECURITYVULNERABILITYANALYSISFOREDUCATIONALWEBSITES 3041
+institutions, identifying key concepts and patterns over 13 Unauthorized access vulnerabilities have been extensively
+years of research, providing theoretical insights into the studied. Omotunde and Ahmed [29] reviewed traditional
+issue of information leakage in educational environments access control mechanisms like DAC, MAC, and RBAC,
+[8]. Li et al. [21], using the crime opportunity theory and highlighting their strengths and limitations. Shi et al. [34]
+routine activity theory, analyzed several key factors affecting proposed the token-constrained permission delegation algo-
+data security risks, such as system vulnerabilities, cross- rithm (TCPDA) for blockchain-based access control, ensuring
+border data transmission, institutional academic capabilities, dynamic permission delegation and reducing unauthorized
+and cloud storage adoption. Employing statistical methods accessrisks.Razaqueetal.[32]developedthehybridunautho-
+like Poisson regression, they systematically evaluated the rized data handling (HUDH) scheme, integrating encryption,
+impact of these factors on Chinese universities [21]. Dolliver access control, and intrusion detection to enhance cloud secu-
+et al. [14] analyzed intrusion detection data from a U.S. rity.Lietal.[22]introducedaglobalflowdiagramtomonitor
+university, offering theoretical foundations and practical guid- cross-level access in hybrid cloud environments, ensuring the
+ance for educational website security strategies. Omeiza and legitimacy of access requests.
+Owusu-Tweneboah [28] conducted penetration testing at Research on token tampering has focused on improving
+Carnegie Mellon University Africa using BurpSuite, identify- the security of JSON Web Tokens (JWT). Hong et al.
+ing and categorizing vulnerabilities by severity and proposing [19] proposed an authentication scheme combining JWT and
+corresponding mitigation measures. IMEI uniqueness to prevent unauthorized access. Ahmed and
+Sunetal.[35]proposedapacketcontent-orienteddetection Mahmood [1] addressed JWT vulnerabilities by introducing
+model for RCE attacks, focusing on XML external entity time-based token generation methods, enhancing resistance to
+(XXE), expression language injection (ELi), and insecure attacks. Nugraha et al. [27] compared JWT with PASETO in
+deserialization(IDSER).Theirmodelintegratesstaticanalysis RESTful APIs, revealing performance and security tradeoffs.
+and machine learning to improve detection precision. Zheng Alkhulaifi and El-Alfy [2] evaluated lattice-based post-
+and Zhang [41] introduced a context-sensitive interprocedural quantum cryptographic algorithms like DILITHIUM and
+analysismethodforidentifyingRCEvulnerabilities,efficiently qTESLA for JWT security, ensuring resistance to quantum
+addressingdynamicfileinclusionandcross-requestdependen- attacks.
+cies.Xiaoetal.[38]developedXGuard,adefensetechnology Sensitiveinformationdisclosurehasbeenmitigatedthrough
+leveraging static analysis to extract sensitive application pro- innovative cryptographic techniques. Celiktas et al. [9] pro-
+gramming interface (API) information from cross-platform posed a Shamir’s secret sharing-based key management
+applications, defining restrictive configurations to mitigate scheme, enhancing secure key access in cloud environments.
+Xrce attacks. Gan et al. [15] introduced a revocable key aggregation cryp-
+For structured query language (SQL) injection vulnerabil- tosystem (RKAC) to allow dynamic control of access rights
+ities, Bayyapu [6] summarized various mitigation strategies, during data-sharing processes. Dhinakaran et al. [13] inte-
+including static and dynamic analysis, taint-based detection, grated quantum key distribution (QKD), CRYSTALS-Kyber,
+andquerydevelopmentparadigms.Mudulietal.[26]proposed and zero-knowledge proofs (ZKPs) to safeguard cloud sys-
+two CNN models, SIDNet-1 and SIDNet-2, to classify SQL tems against quantum computing threats. Vignesh et al. [36]
+injection attacks, addressing overfitting issues with dropout proposed a secure k-nearest neighbor (k-NN) query scheme
+layers in SIDNet-2. Traditional machine learning methods, on encrypted cloud data, combining DT-PKC and secure
+such as random forest classifiers combined with honeypot computation protocols for data privacy and efficient querying.
+servers, have also been applied to detect SQL injections,
+effectively capturing attacker behaviors and enhancing net- III. LLM-EDUATTACKGRAPH
+work security measures [24]. Paul et al. [30] introduced LLM-EduAttackGraph operates in two main stages. First,
+SQLR34P3R, a comprehensive detection framework combin- we perform comprehensive website fingerprinting using our
+ing risk analysis with CVSS and EPSS scoring, capable of custom-designed Website Fingerprinting module, which scans
+blockingattackersafterdetectingmultiplemaliciousattempts. the target website and collects key structural and component-
+Weak password security has been addressed through level information. The results are aggregated into a structured
+various strategies. Pelchen et al. [31] implemented a semi- CSV report that reflects the site’s technical footprint. In
+automatic password-cracking algorithm that dynamically the second stage, this CSV report is fed into the LLM-
+switches attack methods for optimal cracking rates. Hong and EduAttackGraphengine,whereanLLMisusedtoanalyzethe
+Lee [18] proposed a deep learning-based password assess- fingerprint data, infer potential penetration paths, and identify
+ment model suitable for IoT devices, leveraging features likely vulnerabilities based on historical patterns and learned
+like LUDS requirements, zxcvbn scores, and Levenshtein security knowledge. Section III provide a detailed explanation
+distances to predict password security. Bodkhe et al. [7] of each of these two core components.
+used Markov models to improve password complexity eval-
+uation, addressing shortcomings in existing measurement A. Website Fingerprinting Module
+methods. Reddy and Neetha [33] proposed a multifaceted In Fig. 2, the fingerprinting process begins with a hybrid
+approach to strengthen password security, incorporating collection approach that combines active probing with passive
+strong password policies, multifactor authentication, and user monitoring to extract detailed network-level characteristics.
+education. Leveraging techniques such as TCP/IP protocol stack analysis
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 5
+============================================================
+3042 IEEEINTERNETOFTHINGSJOURNAL,VOL.13,NO.2,15JANUARY2026
+Algorithm 1 Website Fingerprinting Procedure
+1: Parameters:
+2: target ip (cid:46)Target IP address or domain
+3: port scanner = “port-go.exe” (cid:46)TCP/IP stack fingerprint-
+ing tool
+4: service scanner=“server-go.exe”(cid:46)Serviceversioniden-
+tification
+5: fingerprint tool = “finger.exe” (cid:46)Web application finger-
+print analyzer
+6: ai model = “spark-api” (cid:46)Vulnerability analysis API
+7: procedure SCAN TARGET(target ip)
+Fig.1. LLM-EduAttackGrapharchitecture. 8: open ports ← PORT SCAN(target ip,
+port scanner) (cid:46)Active TCP probing
+9: service map ← INIT MAP
+10: for each port in open ports do
+11: service ← SERVICE IDENTIFY(target ip:port,
+service scanner)
+12: service map[port] ← [port, service, “-”, “-”, “”]
+13: if service ∈ “http”, “https”} then
+14: url ← BUILD URL(service, target ip, port)
+15: fingerprint ← WEB FINGERPRINT(url, fin-
+Fig.2. Workflowoffingerprintingprocedure.
+gerprint tool) (cid:46)Passive analysis
+and service version fingerprint matching, the system performs 16: service map[port] [2] ← url
+in-depth identification of target network services. The col- 17: service map[port] [3] ← fingerprint
+lected fingerprint data undergoes standardized preprocessing 18: if fingerprint (cid:44) null then
+and is subsequently fed into LLM-EduAttackGraph for 19: vulnerability ← AI ANALYZE(fingerprint,
+ai model)
+automated security risk evaluation.
+The resulting assessment report includes multiple dimen- 20: service map[port] [4] ← vulnerability
+sions of analysis, such as vulnerability similarity scores, 21: end if
+Referencestohistoricallymostsimilarvulnerabilityidentifiers 22: end if
+and descriptions, risk-level assessments, and corresponding 23: end for
+remediation suggestions. The overall workflow of the web- 24: GENERATE REPORT(target ip, service map)
+site fingerprinting process is as follows: 1) accept a target 25: end procedure
+IP address as input; 2) perform port scanning to identify 26: function PORT SCAN(ip, scanner)
+open ports; 3) conduct service identification on the detected 27: raw data ← EXECUTE(scanner, [“-d”, ip])
+ports to determine running services and their versions; 4) for 28: ports←EXTRACT BRACKET CONTENT(raw data)
+HTTP/HTTPS services, extract application-layer fingerprint 29: return ports
+features to generate a detailed fingerprint report; 5) submit 30: end function
+the fingerprint report to the spark-api model for vulnerability 31: function WEB FINGERPRINT(url, tool)
+inference; and 6) integrate the inferred vulnerability results 32: response ← EXECUTE(tool, [“-u”, url])
+into a comprehensive scanning report. 33: features←EXTRACT BRACKET CONTENT(response)
+Algorithm 1 demonstrates the technical details of the 34: if features (cid:44) ∅ then
+network fingerprint scanning technology developed in this 35: return features[0] (cid:46)Primary fingerprint
+study. The algorithm is primarily divided into five functional 36: end if
+modules. The port scanning module initiates the process by 37: return null
+invokingtheport-go.exetooltoconductactiveTCPprobingon 38: end function
+thetargetIPaddressordomainname.Thisstepdeterminesthe
+open ports and returns a corresponding list. Subsequently, the
+serviceidentificationmoduleemploystheserver-go.exetoolto acquired information to generate a comprehensive scanning
+further probe these open ports, aiming to identify the version report that encompasses open ports, service versions, web-
+informationofthecorrespondingservices.Thewebfingerprint site fingerprints, and identified vulnerabilities. This sequential
+analysis module is activated upon the detection of HTTP or process commences with foundational port scanning, pro-
+HTTPS services. Utilizing the finger.exe tool, it extracts the gressively delving into service identification, web fingerprint
+characteristics of the target web page to discern the type analysis, and vulnerability assessment, ultimately culminating
+and version of the web application. The vulnerability analysis in the production of a thorough network scanning report.
+moduleleveragesthespark-apimodeltoanalyzetheextracted LLM-EduAttackGraph leverages the fingerprint recognition
+fingerprintinformationandidentifypotentialsecurityvulnera- report to analyze the characteristics of the target web-
+bilities.Finally,thereportgenerationmoduleintegratesallthe site. Based on such feature analysis, LLM-EduAttackGraph
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 6
+============================================================
+LIUetal.:LLM-ASSISTEDSECURITYVULNERABILITYANALYSISFOREDUCATIONALWEBSITES 3043
+provides accurate target identification and vulnerability scan-
+Algorithm 2 RAG-Based Vulnerability Detection Pipeline
+ning paths for penetration testing, ensuring stability and
+efficiency even in complex network environments. 1: Parameters:
+2: history repo = “Dataset” (cid:46){Source repository for histor-
+ical vulnerability data
+B. LLM-Driven Penetration Path Inference 3: embedding model = “Trained Model” (cid:46){Pre-trained text
+The vulnerability reasoning process in LLM- embedding model from HuggingFace
+EduAttackGraphfollowsastructuredpipelinethatintegrates 4: similarity threshold = 0.6
+historical vulnerability data, vector-based retrieval, and LLM 5: llm model = “DeepSeek”
+generation. The workflow of LLM-driven penetration path 6: procedure BUILDKNOWLEDGEBASE
+inference is shown in Fig. 3 as follows. 7: raw vulns ←∅
+1) Historical vulnerability data are collected from open- 8: raw vulns ← DOWNLOADFILES(history repo)
+source repositories such as Awesome-POC, which 9: text chunks(history repo)
+provides a diverse set of real-world vulnerability exam- 10: for each vuln file in raw vulns do
+ples. 11: description ← EXTRACTDESCRIPTION(vuln file)
+2) Theseexamplesaresegmentedintosmallersemantically 12: chunk ← CREATCHUNK(description)
+meaningful text chunks to improve retrieval accuracy. 13: text chunks.append(chunk)
+3) Each text chunk is then encoded into vector rep- 14: end for
+resentations using the BGE embedding algorithm, 15: for each chunk in text chunks do
+specificallythepretrainedbge-small-zhmodelfrom 16: vector ← EMBEDTEXT(chunk, embedding model)
+HuggingFace, which captures the semantic meaning of 17: embeddings.append(vector)
+vulnerability descriptions. 18: end for
+4) A user query is submitted to the system as the starting 19: vector db ← INITFAISSDB()
+point for the reasoning process. 20: vector db.add(embeddings)
+5) The query is similarly embedded into the same vector 21: return vector db
+space using the same embedding model. 22: end procedure
+6) Cosine similarity is computed between the query vector 23: procedure PROCESSUSERQUERY(vector db)
+and all stored vulnerability vectors to retrieve the most 24: query vector ← EMBEDTEXT(user query, embed-
+relevant historical cases. A similarity score threshold ding model)
+(e.g.,0.6)isapplied—ifthescoreexceedsthisthreshold, 25: max similarity ← 0.0
+the query is classified as a potential vulnerability. 26: for each vector in vector db do
+7) All embedded vectors of vulnerability descriptions are 27: similarity ← COSINESIMILARITY(query vector,
+storedinavectordatabase(e.g.,Faiss),enablingefficient vector)
+similarity-based retrieval at scale. 28: if similarity > max similarity then
+8) The retrieved vulnerability chunks are combined with 29: max similarity ← similarity
+the user query to form a prompt that provides rich 30: top match ← GETTEXTBYINDEX(index)
+context. 31: end if
+9) This prompt is passed to an LLM—specifically, 32: end for
+DeepSeek—togenerateacomprehensiveandinformed 33: if max similarity > = similarity threshold then
+response. 34: prompt←COMBINATION(top match,user query)
+10) Finally, the system outputs a detailed answer, including 35: llm response ← Get LLM(prompt, llm model)
+vulnerabilityanalysis,severityassessment,andpractical 36: answer ← FORMATRESPONSE(llm response)
+remediation suggestions. The main steps are as follows. 37: else
+Algorithm2outlinestheRAG-basedvulnerabilitydetection 38: Return No relevant vulnerabilities were detected
+pipeline. Lines 1–5 define the key parameters, including the 39: end if
+historical vulnerability dataset, the embedding model, and the 40: end procedure
+similarity threshold. Lines 6–21 describe the construction of 41: function EMBEDTEXT(text, model)
+theknowledgebase,wherehistoricalvulnerabilitydescriptions 42: vector ← model.encode(text)
+are chunked, embedded using the BGE model, and stored in 43: Return vector
+the FAISS-based vector database. Lines 22–36 process a user 44: end function
+query by embedding the input, computing cosine similarity 45: function COSINESIMILARITY(vecA, vecB)
+withstoredvectors,and,ifthesimilarityexceedsthethreshold, 46: vector ← model.encode(text)
+generating a response using an LLM. Lines 37–44 define the 47: dot product ← DOT(vecA, vecB)
+embedding and similarity computation functions. 48: normA ← NORM(vecA)
+Vector DataBase Construction: In the construction process 49: normB ← NORM(vecB)
+of LLM-EduAttackGraph, relevant information needs to be 50: Return dot product / (normA * normB)
+obtainedfromhistoricalknowledgesourcesfirst.Amongthem, 51: end function
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 7
+============================================================
+3044 IEEEINTERNETOFTHINGSJOURNAL,VOL.13,NO.2,15JANUARY2026
+https://github.com/Threekiii/Awesome-POC, as an important similarity matching, a threshold of 0.6 has been proven to
+historical vulnerability information repository, provides abun- effectivelyadapttothevectordistributioncharacteristicsofthe
+dant vulnerability example data. After acquiring the data, knowledgebaseinthissystem,thusensuringthattheretrieval
+text chunking technology is employed to disassemble each results possess both relevance and coverage
+vulnerability example into independent text units, forming
+the basic historical information content. To achieve efficient Relevant
+information retrieval and processing, we utilize the Bert BGE ( vulnerability, if max sim (cid:0) v,v (cid:1) ≥threshold
+= i i j
+embedding model to perform vectorization conversion on the
+Others, otherwise
+text
+where symbol max denotes the supremum of the pairwise
+T ={t ,t ,...,t } i
+1 2 n cosine-similarity scores between the target vector v and
+i
+v i =BGE(t i ) every other vector v j in the embedding space. Whenever
+this supremum surpasses the empirically calibrated threshold,
+where T denotes the set of text units after chunking, and
+the generated textual fragment is classified as vulnerability-
+each t represents an independent text unit. v is the vector
+i i
+relevant.
+representation of t, which is a vector of fixed length.
+i
+This rigorous mechanism for similarity calculation and
+BERT, as a pretrained language model, has learned rich
+judgment ensures the accuracy and reliability of the system’s
+linguistic knowledge and semantic information through unsu-
+classificationofuserqueries,enablingpreciseidentificationof
+pervised pretraining on large-scale text data. The Bert BGE
+vulnerability-related issues for subsequent processing.
+embeddingmodelfurtherimprovesandoptimizesonthebasis
+Upon retrieving vulnerability instances with a similarity
+of BERT. Its core principle lies in learning the semantic
+score exceeding the user’s query, the system undertakes a
+features of text through a deep neural network, mapping text
+comprehensive integration of these retrieved contents with the
+sequences into a fixed-length vector space, and transform-
+original query
+ingvulnerabilitydescriptioninformationintolow-dimensional
+dense vector representations. Prompt=Φ(T )⊕Ψ(T)⊕Γ
+2
+Prompt Construction: The user input query, serving as the
+initial trigger for the entire system’s operation, must likewise where Φ(T ) represents the user input content, Ψ(T) is the
+2
+undergo transformation into a vector form via the Bert BGE historical vulnerability text corresponding to the vector with
+embedding model. This vectorization process ensures that the the highest similarity to the input in the vector vulnerability
+user query vector resides within the same semantic vector library, and Γ denotes the instruction template.
+space as the text block vectors stored in the system Using semantic correlation analysis, critical elements such
+as the retrieved vulnerability descriptions, technical charac-
+T ={t ,t ,...,t }
+2 1 2 m teristics, and historical solutions are structurally reorganized
+v
+j
+=BGE (cid:0) t
+j
+(cid:1) .
+in alignment with the problem context of the user’s query.
+This process culminates in the formation of an input text
+In the stage of similarity measurement, the system employs
+with explicit contextual orientation, which serves to guide the
+the classic cosine-similarity algorithm for computation. This
+LLM in conducting reasoning grounded in precise domain
+algorithm quantifies the directional similarity of vectors in
+knowledge of vulnerabilities.
+high-dimensional space by calculating the cosine value of the
+Response: The generated prompt is input into the LLM
+angle between two vectors. A value closer to 1 indicates a
+(primarilyDeepSeek).Thefinalresponseoutputbythesystem
+higher degree of similarity between vectors. Specifically, the
+notonlyincludesadirectanswertotheuser’squestionbutalso
+systemperformspairwisecomputationbetweentheuserquery
+integrates the retrieved vulnerability information to provide a
+vectorandthetextblockvectorsstoredinthevectordatabase,
+comprehensivesummaryofthevulnerabilities.Additionally,it
+comparing their respective vector representations
+puts forward professional suggestions on vulnerability reme-
+sim (cid:0) v,v (cid:1)= v i ·v j =cosθ∈[−1,1]. diation and defense strategies.
+i j (cid:107)v(cid:107)·(cid:107)v (cid:107)
+i j
+Then, we set a similarity threshold of 0.6 as the deci-
+C. LLM Performance Test
+sion criterion. If the computed similarity score exceeds this
+threshold, the current user query is determined to involve 1) Experimental Configuration: This experiment did not
+vulnerability-related content. Conversely, if the score is below employaGPU.TheCPUusedwasanIntelCorei9-13900HX
+thethreshold,thequeryisdeemedunrelatedtovulnerabilities, processor with 16 GB of memory and a 1-TB hard drive.
+and a response of No relevant vulnerabilities were detected 2) ExperimentalResults: Toevaluatethevulnerabilityiden-
+is returned. The determination of a similarity threshold of tification performance of LLM-EduAttackGraph, this study
+0.6 is primarily based on practical experience in the field constructed a dataset containing 90 test samples, including
+of information retrieval and a preliminary evaluation of the 50 vulnerability data (25 Chinese and 25 English samples
+specificsemanticspaceofthisproject.Inthevulnerabilitytext each)and40nonvulnerabilitydata(15Chineseand25English
+matching task, this value serves as an empirical tradeoff point samples). Experimental results show that the model demon-
+forbalancingprecisionandrecall.Withreferencetotherange strated exceptional accuracy in the binary classification task,
+of 0.5–0.7 commonly adopted in the industry for semantic achievinganoverallidentificationaccuracyof98.89%.Only1
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 8
+============================================================
+LIUetal.:LLM-ASSISTEDSECURITYVULNERABILITYANALYSISFOREDUCATIONALWEBSITES 3045
+IV. LLM-EDUATTACKGRAPHFORVULNERABILITY
+DETECTIONANDANALYSISINEDUCATIONALWEBSITES
+With the assistance of LLM-EduAttackGraph, we con-
+ducted a systematic penetration testing campaign targeting
+six major categories of common vulnerabilities in educational
+websites: (cid:79) remote command/code execution; (cid:79) SQL injec-
+1 2
+tion, (cid:79) weak passwords; (cid:79) unauthorized access; (cid:79) token
+3 4 5
+tampering; and (cid:79) sensitive information disclosure. As shown
+6
+in Fig. 5, a heatmap is used to visualize the total number of
+vulnerabilities and highlight the types of vulnerabilities with
+Fig.3. WorkflowofLLM-drivenpenetrationpathinference. the highest occurrence frequencies. In the following sections,
+we analyze the internal mechanisms behind each type of
+vulnerability and describe in detail how they were discovered
+using our tool-assisted approach. For each category, we also
+propose corresponding mitigation strategies aimed at improv-
+ing the overall security posture of educational platforms.
+By deepening the understanding of how these vulnerabilities
+emerge and are exploited, our goal is to raise cybersecurity
+awarenessandcontributetobuildingasaferandmoreresilient
+online environment for educational institutions.
+A. Remote Command/Code Execution Vulnerability
+WehaveidentifiedthreemaincausesofRCEvulnerabilities
+in educational websites: 1) flaws in the framework itself; 2)
+leakage of sensitive information; and 3) bypassing security
+checks during file upload. Specific vulnerability details and
+related information have been presented in a comprehensive
+manner and described in Table II. In terms of framework
+vulnerabilities, we have found that multiple commonly used
+frameworks have known security issues. For example, when
+key–value pair formatted data such as user: admin, password:
+123456 are discovered in the POST request packet, and if
+a vulnerable version of Fastjson (Version <1.2.85) is used
+to process the POST request data, attackers can trigger a
+domainnamesystem(DNS)requestduringthedeserialization
+processbyconstructingmaliciousJSONdata,therebyproving
+the existence of vulnerabilities in the target system. This
+Fig. 4. Runtime performance of the LLM. (a) Runtime performance of the
+LLMinvulnerabilitydataprocessing.(b)RuntimeperformanceoftheLLM can lead to remote command execution and obtaining server
+innonvulnerabilitydataprocessing. permissions. Similarly, frameworks such as Log4j, Struts2,
+and Shiro also have known vulnerabilities. Attackers can
+pieceofvulnerabilitydatawasmisclassifiedasnonvulnerabil- exploit these vulnerabilities to bypass security mechanisms
+ity, while the identification accuracy for nonvulnerability data andexecutearbitrarycodetocontroltheserverbyconstructing
+reached 100%. In terms of operational efficiency, the model specific requests. The root cause of these issues lies in the
+exhibited remarkable task adaptability. The search function security vulnerabilities of the frameworks themselves, which
+was only invoked when vulnerability data were successfully allow attackers to easily obtain server permissions and pose
+identified, with an average processing time of 79.04 s; pro- a serious threat to the website. In terms of code vulnerabili-
+cessing nonvulnerability data required only 9.29 s, reflecting ties, educational websites also have some serious issues. For
+the capability to dynamically optimize resource allocation instance, the leakage of sensitive information is a problem.
+according to task complexity. These results demonstrate that Website code may disclose critical sensitive information such
+the LLM ensures high precision while balancing efficient as access key (AK) and secret key (SK). Attackers can
+response under different task scenarios, showcasing strong take over cloud services and use this sensitive information
+practical application potential. Fig. 4(a) and (b) shows the to execute malicious code, thereby directly obtaining server
+time LLM-EduAttackGrpah took to process vulnerable and permissions. Additionally, the file upload function also has
+nonvulnerable data. In the 27th test shown in Fig. 4(a), the security risks. Attackers can upload malicious scripts (such as
+runtime had a sharp drop because one vulnerable datum was webshells)byusing0day(unpublishedvulnerabilities),nday
+misjudged as nonvulnerable. Except for this, LLM’s overall (publishedbutunpatchedvulnerabilities)orconventionallogic
+performance in data processing was quite stable. bypass methods, thus controlling the server. The root cause
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 9
+============================================================
+3046 IEEEINTERNETOFTHINGSJOURNAL,VOL.13,NO.2,15JANUARY2026
+Fig.5. Heatmapillustratesthespatialdistributionandoccurrencecountofallrecordedattacks.
+TABLEII
+RCE
+TABLEIII
+SQLINJECTION
+of these issues is the insufficient consideration of security In response to the aforementioned RCE vulnerabilities, we
+duringcodewriting,whichallowsattackerstobypasssecurity need to take a series of measures for remediation. For
+mechanismsandperformmaliciousoperationstoobtainserver framework vulnerabilities, the most effective solution is to
+permissions. update the framework versions in a timely manner. Updating
+In general, only 37 RCE vulnerabilities were found in frameworks such as Fastjson, Log4j, Struts2, and Shiro to
+educational websites, accounting for a small proportion the latest versions or adopting published patch methods can
+(approximately 3.85%) of the vulnerabilities identified in effectively prevent attackers from exploiting known vulnera-
+educational websites. However, the existence of vulnerabil- bilities. Second, for code vulnerabilities, we need to enhance
+ities indicates that using outdated versions of frameworks the security review of the code. Removing leaked sensitive
+can increase the risk of websites being attacked. There- information ensures that it will not be obtained by attack-
+fore, timely updating and patching these frameworks to their ers. Strengthening the filtering of file types and content can
+latest versions is crucial for maintaining website security. prevent attackers from uploading malicious scripts. Addition-
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 10
+============================================================
+LIUetal.:LLM-ASSISTEDSECURITYVULNERABILITYANALYSISFOREDUCATIONALWEBSITES 3047
+ally, adding a web application firewall (WAF) can intercept upgrade server components to guard against potential risks of
+malicious requests and further improve the security of the information leakage. Maintaining the latest status of system
+website. componentscansignificantlyreducethelikelihoodofsecurity
+vulnerabilities being exploited, thereby protecting the data
+B. SQL Injection Vulnerability security of the institution and its users.
+A total of 39 SQL injection vulnerabilities were revealed
+C. Weak Password
+in this experiment. The identified vulnerabilities were cat-
+egorized into two types: 1) SQL injection vulnerabilities In this experiment, 535 security vulnerabilities related
+causedbyframeworkissuesand2)conventionalSQLinjection to weak passwords and default passwords were identified,
+vulnerabilities. Specific vulnerability details and related infor- accounting for 55.61% of the total identified vulnerabilities.
+mation have been comprehensively presented and described The commonality of these issues is that attackers can gain
+in Table III. Nacos is an open-source platform from Alibaba, access to the backend system through guessing, brute forcing,
+designedtohelpusersdevelopapplications.Forexample,there or exploiting default account credentials, thereby obtaining
+is a vulnerability in the Nacos framework. By using the test sensitiveinformation,controllingtheserver,andevenexpand-
+statement Nacos/v1/cs/ops/derby?sql = select * from users, it ing the scope of the attack. Table IV systematically organizes
+can be found that users have control over the data queried andsummarizesthespecificdetailsandrelatedinformationof
+by SQL statements and there is an injection point, allowing these vulnerabilities. The backend login pages have obvious
+malicious SQL statements to be executed. This can lead to security vulnerabilities, the root cause of which is that the
+the leakage of database accounts and passwords, malicious system’s default accounts and passwords are too simple, and
+manipulation of the database, and even privilege escalation to effective access control measures have not been implemented,
+obtain shell access. Conventional SQL injection issues mainly allowing attackers to easily obtain backend access rights. For
+occurinthebackendcategory.Afterloggingintothebackend, example, open-source components such as Druid, a high-
+SQL injection was discovered when conducting SQL tests performance database system for real-time analysis. MinIO,
+on certain interfaces. The principle of vulnerability is that an open-source object storage server. MySQL, an open-
+malicious SQL statements are constructed for specific param- source relational database management system and Redis, an
+eters,andthesystempassesparameterswithoutfilteringthem, open-sourcehigh-performancekey–valuestoragedatabase,are
+resultingintheparametersbeingconcatenatedandexecutedas widely used in web development. The default login page of
+partofthesystemSQL.Thiscansimilarlyleadtotheleakage the Druid component can be tested by accessing a specific
+of database accounts and passwords, malicious manipulation path.IfDruidusesthedefaultpasswordroyal123456orother
+of the database, and even privilege escalation to obtain shell simple passwords, attackers can easily log in to the backend
+access. and obtain sensitive information such as sessions. When com-
+Whether it is a framework issue or a conventional SQL ponentslikeMinIO,MySQL,andRedisaredeployedonports
+injection issue, the solution can be to upgrade to the andthoseportsarenotclosed,targetedattackscanbelaunched
+latest version. For framework issues, timely upgrades to against these ports. MySQL runs on port 3306, while Redis
+the latest version can effectively prevent the exploitation runsonport6379.Attackerscanutilizescriptstoconductfuzz
+of known vulnerabilities. For conventional SQL injection testing based on weak passwords for these ports, attempting
+issues, although upgrading the framework version may not to brute force the default passwords of the components.
+directly fix code-level vulnerabilities, combining it with Thebackendofthesmartcampusmanagementplatformhas
+code-level protection measures, such as adding parameter issues with empty accounts and weak passwords. Attackers
+filteringandusingpreparedstatements,caneffectivelyprevent can discover default passwords through brute forcing and
+the execution of malicious SQL statements. Through these then log in to the backend to obtain sensitive data such as
+measures, the risk of website attacks can be significantly studentinformation.TheRuoyiframework,asanopen-source
+reduced, and the security of the database and server can be Java development platform, can help users quickly develop
+protected. websites. However, it is this widely used framework whose
+SQLinjectionvulnerabilitiesaccountfor4.05%ofthetotal backend login page has been found to have a default weak
+vulnerabilities.Itislogicalthatthesecurityvulnerabilitiesthat password vulnerability. Similarly, the Huatian Power Office
+cause SQL injection in educational websites are similar in AutomationSystem(HuatianPowerOA),asanofficeautoma-
+nature to those causing RCE vulnerabilities. When attackers tion software, also exposes default password issues on the
+attempt to execute commands remotely, they are likely to backendloginpage.Attackerscanusethesedefaultpasswords
+target the database to illicitly obtain sensitive information. to log in to the backend, modify student information, leak
+The commonality of these attack methods lies in the fact sensitivedata,andevencontrolequipmentwithinthecampus.
+that both SQL injection and RCE involve attackers exploiting In website development, developers often rely on existing
+security flaws in the system or application to achieve unau- open-source frameworks. Some educational websites, espe-
+thorized access and manipulation of the backend database. cially schools, are built and maintained by their internal
+Therefore,understandingthesimilarcausesofthesetwotypes teachers.However,duetothelackofexperienceoftheseinter-
+of vulnerabilities is crucial for developing effective defense nal technical personnel in website construction, it may lead to
+strategies. We call upon the website administrators of relevant thefailuretochangedefaultpasswordsinatimelymannerdur-
+educational institutions to continuously monitor and promptly ing website deployment, thereby introducing security risks. In
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 11
+============================================================
+3048 IEEEINTERNETOFTHINGSJOURNAL,VOL.13,NO.2,15JANUARY2026
+TABLEIV
+WEAKPASSWORD
+addition to developing and building websites by internal tech- vulnerabilities. A total of 271 unauthorized access vulnera-
+nical personnel, some educational institutions choose to pur- bilities were found in educational websites, accounting for
+chase ready-made website functional module solutions from 28.20%ofthetotalidentifiedvulnerabilities.Thecommonality
+external suppliers, which does not mean complete security. of these issues is that attackers can access specific interfaces
+As can be seen in the table, 34 websites were affected by the or services without authorization, thereby obtaining sensi-
+supply chain compromise. Companies provide built website tive information or performing malicious operations. Whether
+functionalities for educational institutions and undertake data it is through the leakage of Swagger interface documenta-
+storageandoperation,andmaintenanceresponsibilities.Under tion and other configuration issues or through accessing the
+this model, once the databases managed by these companies default paths that exist in the Java development framework
+are leaked, the information stored in the universities is also at Spring, or through constructing malicious requests via the
+risk of being leaked. In addition, during the execution of rou- Nacos system’s default interface, these issues all indicate
+tine weak password testing, we found that 101 undergraduate that many websites have serious vulnerabilities in the access
+university websites and 162 other types of educational web- control of interfaces and services. Attackers can exploit these
+sites had weak password vulnerabilities. Then, four websites vulnerabilities to obtain sensitive information such as user
+did not have a CAPTCHA set up, and the student accounts of information, passwords, configuration information and even
+mostschoolsarestudentIDs,whicharealsolikelytoappearin perform malicious operations such as creating new users,
+scholarship announcements. Theoretically, as long as there is viewing administrator passwords, and so on. In addition,
+enough time, we can test the correct accounts and passwords. components such as Redis, Zookeeper, Telnet, and Har-
+During the experimental phase, it was observed that a bor all expose issues of unauthorized access. Among them,
+significant number of vulnerabilities were attributed to weak Zookeeper is a service designed for distributed applications,
+passwords. The prevalence of weak password vulnerabilities developed by the Apache Software Foundation. Telnet, short
+across educational websites is alarmingly high. Consequently, forTelecommunicationNetwork,isanetworkcommunication
+it is imperative for these institutions to enhance their security protocol. Harbor is developed by VMware to help enter-
+protocols by enforcing stricter control measures. prises manage and deploy containerized applications more
+efficiently.Attackerscangainunauthorizedaccessbyscanning
+D. Unauthorized Access Vulnerability
+ports or exploiting known vulnerabilities, thereby obtaining
+Table V systematically organizes and summarizes the spe- sensitiveinformationorcarryingoutmaliciousoperations.The
+cific details and related information of unauthorized access existence of these issues not only poses a threat to website
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 12
+============================================================
+LIUetal.:LLM-ASSISTEDSECURITYVULNERABILITYANALYSISFOREDUCATIONALWEBSITES 3049
+TABLEV
+UNAUTHORIZEDACCESSVULNERABILITY
+security but may also lead to serious consequences such as same password test1. To prevent attackers from creating new
+user data leakage and malicious exploitation of systems. usersorperformingotherunauthorizedoperationsthroughthe
+Specifically, regarding the unauthorized access issue of User-Agent permission bypass vulnerability, the application.
+the Swagger interface documentation, attackers can discover The properties configuration file of Nacos can be modified
+interfaces through configuration issues such as the leakage to enable service identity recognition or enable permission
+of the Swagger interface documentation and then use the authentication for the Nacos registration and configuration
+interface documentation to conduct tests. They can construct center. Additionally, attackers may attempt to construct mali-
+malicious requests according to the interface documentation cious requests through the default interface of the Nacos
+to obtain sensitive information, such as user information and system to view administrator passwords or directly access
+passwords. Remediation methods include prohibiting access the backend. The Nacos backend typically contains website
+to the Swagger documentation after development, imple- passwords, database passwords, and so on, and vulnerabilities
+menting interface documentation verification, and restricting in the Nacos system can lead to information leakage. Com-
+access to API interface paths. For the unauthorized access ponents such as Druid, Redis, Zookeeper, Telnet, and Harbor
+issue of Spring’s default interfaces, attackers can access the haveomissionsinauthenticationsettings.Attackerscanobtain
+default paths existing in Spring, such as /prod-api/actuator, Druid backend information, such as session, by accessing the
+/prod-api/actuator/env, and /prod-api/actuator/health, to obtain default path of Druid, like /druid/index.html. Alternatively,
+configuration information and application version details. The they can scan the open ports of the website and conduct
+fix is to restrict access permissions after development and targeted tests on these ports. For unauthorized vulnerabilities
+prohibit access to the default Spring interfaces. Regarding due to the lack of component authentication settings, general
+the unauthorized access issue of Nacos, if the Nacos system remediation methods can include setting up authentication,
+doesnotstrictlyvalidatetheUser-Agentfieldwhenprocessing closing remote access ports, changing component versions, or
+user authentication requests, it will treat requests with the shutting down the service.
+User-Agent set to Nacos-Server as internal requests, thereby Similar to the causes of weak password vulnerabilities,
+bypassing permission verification. At this point, attackers are developers failed to adequately consider website security
+able to dispatch a POST request to the default interface of issues after the completion of website development, resulting
+the Nacos system. The target uniform resource locator (URL) intheabsenceofkeysecuritymeasuressuchasauthentication,
+here is http://your-ip:8848/nacos/v1/auth/users, and they will thus causing unauthorized access vulnerabilities. It is worth
+also attach the data username=test1&password=test1 along notingthatamongthe271unauthorizedaccessvulnerabilities,
+with the request. Once the request is successful, attackers can 102wereduetounauthorizedaccessviadefaultSpringframe-
+createanewusernamedtest1andlogintothesystemwiththe workinterfacesand93wereduetoconventionalunauthorized
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 13
+============================================================
+3050 IEEEINTERNETOFTHINGSJOURNAL,VOL.13,NO.2,15JANUARY2026
+TABLEVI
+TOKENTAMPERING
+access. Unauthorized access vulnerabilities are usually caused processes data packets, it will return JWT information to
+by improper system configuration of file access permissions the client. Attackers can take advantage of this to try to
+or a lack of effective access control measures. The Spring construct malicious JWT tokens and bypass the system’s
+framework has certain paths that can access configuration securitymechanisms.TheimpactrangeofJWTvulnerabilities
+information.Aftersomeeducationalwebsitesweredeveloped, caused by system logic vulnerabilities is relatively wide,
+developers failed to set up proper access control or did not and the specific impact depends on the system’s specific
+protect the Spring access paths, resulting in unauthorized implementationandconfiguration.CheckingwhethertheJWT
+access vulnerabilities. To mitigate these vulnerabilities, it is construction complies with the standard, re-encrypting the
+recommended to take measures, including but not limited to JWT, or encrypting the JWT key can enhance the system’s
+strengthening input validation, implementing strict permission defense against token tampering vulnerabilities.
+checks, regularly auditing system security configurations, and
+updating security policies.
+F. Sensitive Information Disclosure
+In educational websites, unauthorized access vulnerabilities
+andweakpasswordvulnerabilitieshavethehighestoccurrence Table VII provides a systematic organization and summary
+frequency. We observed that unauthorized access vulnerabili- of the specific details and relevant information of these vul-
+ties and weak password vulnerabilities primarily emerged in nerabilities. A total of 57 instances of sensitive information
+the peripheral assets of schools (e.g., websites whose domain leakage were found in educational websites, accounting for
+namesdonotbelongtotheuniversitybutaremarkedwiththe 5.93% of the identified vulnerabilities. There are four main
+copyright ownership of a certain university and store student causes of sensitive information leakage in educational web-
+data). The peripheral assets of educational institutions are sites: cloud key leakage,.svn folder leakage, access to ID
+prone to having weak passwords such as admin, admin123, card information on the front end, and router accounts and
+and 123456. passwords leakage. Among them, the.svn folder is a hidden
+folder created by the Subversion version control system in
+every folder under version control, used to store version
+E. Token Tampering
+control information related to that folder. The leakage of
+Table VI summarizes and consolidates the process of dis- cloud keys is the main factor leading to sensitive information
+covering token tampering vulnerabilities, their principles, the exposure. In the Alibaba Cloud environment alone, we found
+impactstheycause,aswellasthemethodstofixthem.Inthis 35 incidents related to AK and SK leakage. The leakage
+experiment, only seven token tampering vulnerabilities were of AK and SK may be caused by various factors such as
+identified, accounting for 0.73% of the identified vulnerabili- developers’ negligence and improper configuration files and
+ties in educational websites. Token tampering mainly focuses is not entirely due to issues with the cloud server providers.
+on the use of Nacos system and JWT tokens. The common These issues share a common point that attackers can obtain
+point of these vulnerabilities is that attackers can bypass sensitive information through various means and then use this
+permissionchecksbyconstructingmaliciousJWTtokens,thus information for malicious operations, posing a serious threat
+obtainingsensitiveinformationorcarryingoutmaliciousoper- tothesecurityofwebsitesandtheconfidentialityofuserdata.
+ations. Attackers can exploit these vulnerabilities to bypass LeakageofAKandSKfromAlibabaCloud,TencentCloud,
+permission check mechanisms to obtain sensitive information, andQingniuCloudhasbeenidentified.Intheactualprocessof
+such as database passwords, and even carry out a variety of website development and maintenance, many developers fail
+malicious operations. to properly manage sensitive information when using cloud
+In the Nacos framework, the default key of Nacos can be services. AK and SK, which should be strictly controlled, are
+usedtogenerateJWTtokens.Ifthedeveloperdoesnotmodify exposed, and the JavaScript (JS) content does not delete these
+the default key of Nacos or does not check the key, attackers sensitivedetails.AnyonewhocanaccesstheJSfilemayeasily
+can try to construct authentication tokens and bypass the obtain these critical keys. Meanwhile, there is also a risk of
+authenticationmechanismbyexploitingthedefaultconfigured informationleakagethroughaccessingthewebsitesourcecode
+key in the Nacos platform and common account information, and backend systems. If sensitive information is not hidden
+thusdirectlyobtainingaccesstoNacos.Modifyingthedefault in the source code, attackers can use these clues to further
+key of Nacos or setting Nacos to be accessible only within exploitothersystemvulnerabilitiesordirectlyusethesensitive
+the internal network can effectively avoid the risks brought information for malicious attacks. With the leaked AK and
+by token tampering vulnerabilities. Another type is due to SK, attackers can directly access cloud data, obtain shell per-
+the vulnerability at the system logic level. When the system missionsofthewebsitebywritingmaliciousscripts,andeven
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 14
+============================================================
+LIUetal.:LLM-ASSISTEDSECURITYVULNERABILITYANALYSISFOREDUCATIONALWEBSITES 3051
+TABLEVII
+SENSITIVEINFORMATIONDISCLOSURE
+executeremotecodetoentertheinternalnetworkenvironment. malicious links embedded in the JS code; 2) clearing all
+Shutting down the cloud server or modifying the AK and SK unauthorized black pages; and 3) deleting all unnecessary
+information can prevent attackers from obtaining cloud data logical jumps in the JS. This particular case of a suspected
+or performing other malicious operations through the leaked hacked educational website reveals the risks that educational
+keys. In addition to the leakage of cloud key information, sites currently face. It also serves as a reminder to educa-
+somewebsiteshavemanagementvulnerabilities.Forexample, tional administrators and technical staff to strengthen their
+improperexposureofIDcardinformationonthefrontend,.svn focus and investment in cybersecurity to ensure the safety of
+sensitive information leakage, and leakage of router accounts educational information and the stability of the educational
+and passwords. During website development, code manage- environment.
+mentshouldbestrengthenedtoensurethatallcodeisproperly In the process of advancing society as a whole toward
+cleaned up after completion, avoiding unnecessary sensitive intelligence and modernization, the Internet has played an
+informationsuchasresidual.svnpaths.Thecontentdisplayed essential bridging role. Therefore, conducting cybersecurity
+on the front end should be strictly reviewed, and any poten- research and ensuring the security of information flow is
+tially leaked sensitive data should be deleted along with the an indispensable part of promoting social development.
+timely clearance of router-related configuration information. Educational websites have numerous systems, a large
+volume of data, and a wide range of influence, necessitating
+implementing cybersecurity measures and data protection
+V. DISCUSSION
+governance. Moreover, educational websites store a vast
+Currently, the ability of automated tools to detect logi-
+amount of personal information, with student data making up
+cal flaws is generally not as effective as manual detection.
+the majority. Protecting educational websites from attacks by
+LLM-EduAttackGraph does not yet support the detection of
+malicious individuals and ensuring information security has a
+logical flaws. However, during our team’s security testing
+profound impact on protecting students, especially those who
+of educational websites, we successfully identified logical
+are inexperienced in the ways of the world and underage
+flaw vulnerabilities in six undergraduate university websites
+students. Analyzing the specific vulnerabilities of educational
+and nine other types of educational websites based on the
+websites can help us intuitively perceive the potential security
+informationcrawledbyLLM-EduAttackGraph.Inoursample,
+risks within the sites, identify the nature and causes of the
+we found that key assets of educational websites, typically
+vulnerabilities, and assess their potential impact on website
+composed of the school’s name followed by domain exten- security and data integrity. This article differs in focus from
+sions like.edu or.org, and usually the official websites of the
+previous research in the field of educational website security.
+schools, are more prone to logical vulnerabilities, while the
+While previous studies often concentrated on discussing the
+frequency of conventional Top ten vulnerabilities on these
+social factors behind identified vulnerabilities, this research
+officialwebsitesiscomparativelylowerthanothereducational
+proactively explores potential specific vulnerabilities within
+websites. Additionally, it is particularly important to note
+educational websites. By analyzing the details of specific
+that in the sample of educational websites analyzed in this
+vulnerabilities, including the discovery process, the causes
+study, we identified one site that exhibited signs of being
+of the vulnerabilities, the specific impacts on educational
+hacked. Upon reviewing the site’s JS code, we discovered websites,andprovidingremediationmethods,thisstudyoffers
+suspicious page links unrelated to the site that could trigger
+new insights into the security vulnerabilities of educational
+page redirects when clicked. When accessing the site, a
+websites from a technical perspective. This methodological
+networkloadpresentedanunauthorizedblackpage.Therefore,
+shiftallowsus togainadeeperunderstanding ofthetechnical
+we concluded that the site might have been compromised
+security risks and provides an empirical basis for the preven-
+by hackers. The site can be remediated by: 1) removing the
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 15
+============================================================
+3052 IEEEINTERNETOFTHINGSJOURNAL,VOL.13,NO.2,15JANUARY2026
+tionandremediationofvulnerabilities.Weconductedrealtests B. Scalability Considerations for Large-Scale Deployment
+on hundreds of educational websites within China, and the
+LLM-EduAttackGraphemploysadecoupledarchitectureof
+cybersecurity issues revealed are significantly representative.
+offline knowledge base construction and online lightweight
+retrieval. This design places computationally intensive tasks
+A. Universal Applicability and Cross-Regional Validity of
+like vectorization and indexing into the offline phase, effec-
+Llm-EduAttackGraph
+tivelyavoidingperformancebottlenecksduringonlineservice.
+The cybersecurity challenges faced by educational websites Thevectordatabase,builtonFAISS,supportsefficientsimilar-
+are not unique to China. Educational platforms worldwide are
+itysearchandcanbedeployedinamultimachineenvironment
+continuously encountering various cyber threats and attacks.
+forhorizontalscaling.Thefingerprintscanningmoduleutilizes
+EvenprestigiousinstitutionslikeStanfordUniversity[10]have
+concurrent port probing and service identification, enabling
+been targeted multiple times. Many countries have begun
+parallel processing of multiple target IPs. By decoupling the
+strengthening cybersecurity protections within the education
+knowledge base, fingerprint scanning, and LLM reasoning,
+sector, encouraging schools and universities to implement
+each system component can be independently deployed and
+strictercybersecuritypoliciesandtechnicalmeasures.Chinese scaled,thusefficientlypreventingresourcecontention.Further-
+higher education institutions cooperate more closely with
+more, the vulnerability knowledge base supports incremental
+domestic enterprises. Many universities can gain practical
+updates; only new vulnerability texts need to be vectorized
+experience from real cybersecurity incidents through coop-
+and merged into the existing index, eliminating the need for
+eration with large Internet companies (such as 360 Security
+a full reconstruction and significantly improving maintenance
+Technology). Therefore, the analysis of the security of educa- efficiency in large-scale scenarios. Consequently, LLM-
+tional websites in mainland China can still offer insights into
+EduAttackGraph is well-suited for large-scale deployment.
+global cybersecurity efforts and provide valuable experience
+In the future, LLM-EduAttackGraph can address the expo-
+for cybersecurity management worldwide. Below are some
+nential growth of vulnerability data in the education sector
+recommendations we propose based on the research.
+by constructing a distributed vector retrieval architecture and
+Althoughtheproposedmethodwasdevelopedandvalidated
+achieving the decoupling and independent scaling of knowl-
+primarilyusingeducationalwebsitesfromMainlandChina,its
+edge base management, fingerprint collection, and reasoning
+technical framework and implementation mechanisms exhibit
+services through microservice-based refactoring. By introduc-
+strong generalizability and cross-regional applicability. The
+ing container orchestration and load balancing mechanisms,
+vulnerabilityknowledgebase(e.g.,Awesome-POC)issourced it can effectively resolve the bottleneck in resource schedul-
+from globally available vulnerability repositories, covering
+ing under large-scale deployment, while ensuring analysis
+multiple languages and technology stacks, and is not depen-
+accuracy, it can significantly reduce the computational power
+dent on the network infrastructure or policy environment
+requirements for centralized inference by integrating model
+of any specific country or region. The fingerprint scanning
+quantization technology and edge computing node deploy-
+module is based on standard network protocols and common
+ment. This systematic expansion solution will comprehen-
+web technology stacks (e.g., CMS, middleware, and front-end
+sively enhance the platform’s capabilities in multi-institution
+frameworks), enabling it to identify internationally prevalent
+collaboration and massive data processing and provide key
+educational platforms such as Moodle, Blackboard, and Can-
+technical support for building a cybersecurity protection sys-
+vas. Moreover, the pretrained language models used (e.g.,
+tem with wide-area coverage and real-time response.
+BGE and DeepSeek) support multilingual understanding and
+generationandarecapableofprocessingvulnerabilitydescrip-
+tions and remediation suggestions in languages including
+C. Limitations and Suggestions
+English and Chinese. Therefore, with appropriate localization
+adjustments to fingerprint rules and prompt templates, the Thedatasampleofthisstudyislimitedtoeducationalweb-
+method can be effectively applied to institutions worldwide siteswithinmainlandChina,primarilyduetolegal,regulatory,
+for network penetration testing and security hardening. andethicalconstraintsthatrestrictpenetrationtestingactivities
+By adopting the RAG framework, LLM-EduAttackGraph to authorized domestic targets. While this geographical focus
+enables precise matching and in-depth semantic reasoning imposes certain limitations on the universality of the findings,
+between this globally standardized vulnerability knowledge the security landscape of Chinese educational websites pro-
+and the real-time fingerprint features of any target website. vides valuable insights that can inform global cybersecurity
+Consequently,theanalyticalcapabilityofthismethodisrooted practices. In China, higher education institutions often main-
+in the objective mapping of security risks associated with tain strong partnerships with domestic technology enterprises
+generic IT components, rather than being constrained by and cybersecurity firms (such as Qihoo 360), facilitating the
+regionalnetworkconfigurationsormanagementpractices.This rapidexchangeofknowledgeandpracticalexperiencethrough
+attribute ensures that the method maintains consistent analyt- real-world incident response and collaborative projects. As
+ical accuracy and practical utility in security assessments of such,ourfocusedanalysisofChineseeducationalwebsitesnot
+websites across diverse countries and regions—encompassing onlyaddressesacriticalnationalcontextbutalsooffersgener-
+the education, scientific research, government, and enterprise alizable lessons and strategies for enhancing the cybersecurity
+sectors—thereby offering a universally applicable technical of educational systems worldwide. Based on our findings, we
+solution for cross-regional cybersecurity risk assessment. present the following recommendations.
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 16
+============================================================
+LIUetal.:LLM-ASSISTEDSECURITYVULNERABILITYANALYSISFOREDUCATIONALWEBSITES 3053
+1) To ensure the stability and security of website systems, been reported to the respective institutions and subsequently
+it is recommended to regularly check the status of remediated. The system is exclusively designed to assist
+the system components. Using outdated versions of educational organizations in enhancing their network security
+components can lead to hackers exploiting known vul- capabilities; any unauthorized penetration testing or malicious
+nerabilities, resulting in losses. For instance, we found exploitation is strictly prohibited.
+thatcomponentslikeFastjson,duetotheirlowversions,
+had known vulnerabilities that had not been patched. ACKNOWLEDGMENT
+Hiesgen et al. [16] also point out that regarding the Part of this research was conducted at the Department
+Log4j vulnerability, even though patches for the new of Information Technology, Yangtze Delta Region Institute
+version of the component have been released, the Log4j of Tsinghua University, Zhejiang, China. The authors would
+vulnerability will remain a significant threat for some like to express their sincere appreciation to Langzhu Hong,
+time to come. Yongquan Shi, Yikai Zhou, and Tianlong Lin for their invalu-
+2) Improve the training of website management team able support and insightful suggestions. Their professional
+members and other relevant personnel to increase their expertise in penetration testing and their provision of tech-
+security awareness. Through systematic education and nical and data support have substantially contributed to the
+training, they can more effectively address potential development of this study.
+securitythreatsduringthewebsitedevelopmentprocess.
+For instance, the failure to change default passwords REFERENCES
+in ready-made frameworks and the default use of
+[1] S. Ahmed and Q. Mahmood, “An authentication based scheme for
+student IDs as accounts in campus management applicationsusingJSONWebtoken,”inProc.22ndInt.MultitopicConf.
+systems are manifestations of developers’ weak security (INMIC),Nov.2019,pp.1–6.
+[2] A. Alkhulaifi and E.-S.-M. El-Alfy, “Exploring lattice-based post-
+consciousness.
+quantumsignatureforJWTauthentication:Reviewandcasestudy,”in
+Currently, cutting-edge technologies—particularly deep learn- Proc.IEEE91stVeh.Technol.Conf.(VTC-Spring),May2020,pp.1–5.
+[3] Anonymous.PoliceHaveLaunchedanInvestigationIntotheSuspected
+ing and machine learning—have shown promising results in
+Leak of Information About Nearly 20,000 Students At a Univer-
+thefieldofcybersecurity.Ascitedin[24]and[22],researchers sity in Zhengzhou. [Online]. Available: https://cn-sec.com/archives/
+have successfully applied these techniques to network attack 3026353.html
+[4] Anonymous.(2023). Qut Was Attacked By Cyber Hackers and
+detection. In the future, it may be possible to leverage deep
+the Identity Information of Tens of Thousands of Students and
+learning tools for the automated protection of educational Teachers Was Leaked. [Online]. Available: https://www.sohu.com/a/
+websites. 637243728121117447
+[5] S.T.Argawetal.,“Cybersecurityofhospitals:Discussingthechallenges
+andworkingtowardsmitigatingtherisks,”BMCMed.Informat.Decis.
+VI. CONCLUSION Making,vol.20,no.1,pp.1–10,Dec.2020.
+[6] N.Bayyapu,“SQLinjectionattacksandmitigationstrategies:Thelatest
+In this article, we conducted a large-scale vulnerability comprehension,” in Advances in Cybersecurity Management. Cham,
+detection and analysis on real educational websites within Switzerland:Springer,2021,pp.199–220.
+[7] U. Bodkhe, J. Chaklasiya, P. Shah, S. Tanwar, and M. Vora, “Markov
+mainland China. Based on an in-depth analysis of the specific
+modelforpasswordattackprevention,”inProc.1stInt.Conf.Comput.,
+identification process and principles of the 961 vulnerabil- 2020,pp.831–843.
+ities found on these websites, we assessed the potential [8] I. Bongiovanni, “The least secure places in the universe? A system-
+atic literature review on information security management in higher
+adverse consequences of these vulnerabilities and provided
+education,”Comput.Secur.,vol.86,pp.350–357,Sep.2019.
+guiding suggestions on how to effectively remediate them. [9] B. Celiktas, I. Celikbilek, and E. Ozdemir, “A higher-level security
+Additionally, this study conducted a comprehensive survey scheme for key access on cloud computing,” IEEE Access, vol.9,
+of different types of vulnerabilities discovered, including the pp.107347–107359,2021.
+[10] (2024). Stanford University is Warning of a Data Breach Involving
+latest research findings of other scholars on protecting the 27,000 People and 430gb of Data Being Stolen. [Online]. Available:
+networkfromspecificvulnerabilities.Startingfromatechnical
+https://news.qq.com/rain/a/20240314A0710300
+[11] I. David and A. Gervais, “Multi-agent penetration testing AI for the
+perspective, we analyzed the causes of vulnerabilities and
+web,”2025,arXiv:2508.20816.
+discussed the social factors leading to vulnerabilities in edu- [12] G.Dengetal.,“PentestGPT:Evaluatingandharnessinglargelanguage
+cational websites: the lack of experience of developers within modelsforautomatedpenetrationtesting,”inProc.33rdUSENIXSecur.
+Symp.(USENIXSecur.),Aug.2024,pp.847–864.
+educational institutions or outsourcing website development
+[13] D. Dhinakaran, D. Selvaraj, N. Dharini, S. Edwin Raja, and C. Sakthi
+to companies, resulting in the same vulnerabilities across Lakshmi Priya, “Towards a novel privacy-preserving distributed multi-
+multiple institutions. Our research work helps to deepen the party data outsourcing scheme for cloud computing with quantum key
+distribution,”2024,arXiv:2407.18923.
+understanding of potential safety hazards in educational web-
+[14] D. S. Dolliver, A. K. Ghazi-Tehrani, and K. T. Poorman, “Building
+sites,andwearecommittedtostrengtheningthecybersecurity a robust cyberthreat profile for institutions of higher education: An
+protection system. empirical analysis of external cyberattacks against a large university’s
+computernetwork,”Int.J.Law,CrimeJustice,vol.66,Sep.2021,Art.
+no.100484.
+VII. ETHICSSTATEMENT [15] Q.Gan,X.Wang,andD.Wu,“Revocablekey-aggregatecryptosystem
+fordatasharingincloud,”Secur.Commun.Netw.,vol.2017,pp.1–11,
+Inpracticalapplication,thesystemstrictlyadherestocyber- 2017.
+security ethics protocols, with all testing activities conducted [16] R. Hiesgen, M. Nawrocki, T. C. Schmidt, and M. Wa¨hlisch, “The
+Log4j incident: A comprehensive measurement study of a critical
+under explicit authorization from the target educational web-
+vulnerability,” IEEE Trans. Netw. Service Manage., vol.21, no.6,
+sites.All961vulnerabilitiesidentifiedthroughthesystemhave pp.5921–5934,Dec.2024.
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
+
+============================================================
+PAGE 17
+============================================================
+3054 IEEEINTERNETOFTHINGSJOURNAL,VOL.13,NO.2,15JANUARY2026
+[17] S.HinaandP.D.D.Dominic,“Informationsecuritypolicies’compli- [41] Y.ZhengandX.Zhang,“Pathsensitivestaticanalysisofwebapplica-
+ance: A perspective for higher education institutions,” J. Comput. Inf. tions for remote code execution vulnerability detection,” in Proc. 35th
+Syst.,vol.60,pp.201–211,Mar.2020. Int.Conf.Softw.Eng.(ICSE),May2013,pp.652–661.
+[18] K.H.HongandB.M.Lee,“Adeeplearning-basedpasswordsecurity
+evaluationmodel,”Appl.Sci.,vol.12,no.5,p.2404,Feb.2022.
+[19] N. Hong, M. Kim, M.-S. Jun, and J. Kang, “A study on a JWT-based
+userauthenticationandAPIassessmentschemeusingIMEIinasmart
+homeenvironment,”Sustainability,vol.9,no.7,p.1099,Jun.2017. ChaoLiu(Member,IEEE)receivedthePh.D.degreeincomputerscienceand
+[20] S.Krishnamurthy,“Thefutureofbusinesseducation:Acommentaryin electronic engineering from the University of Maryland, Baltimore County,
+theshadowoftheCOVID-19pandemic,”J.Bus.Res.,vol.117,pp.1–5, Baltimore,MD,USA,in2021.
+Sep.2020. He has published as the first and corresponding author in top-tier jour-
+[21] J. Li, W. Xiao, and C. Zhang, “Data security crisis in universities: nals, such as IEEE TRANSACTIONS ON INFORMATION FORENSICS AND
+Identificationofkeyfactorsaffectingdatabreachincidents,”Humanities
+SECURITY and IEEE TRANSACTIONS ON DEPENDABLE AND SECURE
+SocialSci.Commun.,vol.10,no.1,pp.1–18,May2023. COMPUTING, and in leading conferences, including DSN, SRDS, and E-
+[22] N.Li,Y.Dong,T.Che,C.Wang,andY.Gao,“Thelegitimacydetection VOTE-ID. He has also collaborated with David Chaum; their joint work
+formultilevelhybridcloudalgorithmbaseddataaccess,”inProc.IEEE VoteXX was presented at E-VOTE-ID 2022, one of the top international
+Int.Conf.Softw.Qual.,Rel.Secur.-Companion,Aug.2015,pp.169–172. conferencesinelectronicvoting.Hisresearchinterestsfocusonasynchronous
+[23] Y.LiandQ.Liu,“Acomprehensivereviewstudyofcyber-attacksand Byzantine fault tolerance protocols, consensus algorithms for distributed
+cybersecurity;emergingtrendsandrecentdevelopments,”EnergyRep., systems,andblockchains.
+vol.7,pp.8176–8186,Nov.2021.
+[24] B. Manjunatha K. A. Shastry, M. Mohan, and Aravind, “Intelligent
+defense strategies: Machine learning-enhanced sql injection detection
+and prevention via honeypots,” in Proc. Int. Conf. Intell. Algorithms
+Comput.Intell.Syst.(IACIS),2024,pp.1–7. Jiaxing Liu received the bachelor’s degree from Huaqiao University,
+[25] (2023).TensofThousandsofTeacherandStudentInformationisSold Quanzhou, China, in 2024. He is currently pursuing the master’s degree
+Abroad!aUniversityinJiangxiHasBeenFined800,000Yuan.[Online]. with Fuzhou University, Fuzhou, China, affiliated with Fujian Provincial
+Available:https://www.thepaper.cn/newsDetailforward24265003
+KeyLaboratoryofData-IntensiveComputingandIntelligentComputingand
+[26] D. Muduli et al., “SIDNet: A SQL injection detection network for InformationProcessing.
+enhancing cybersecurity,” IEEE Access, vol.12, pp.176511–176526, He conducts research in the field of network security based on large
+2024. languagemodels.
+[27] A. F. Nugraha, H. Kabetta, I. K. S. Buana, and R. B. Hadiprakoso,
+“Performance and security comparison of json web tokens (JWT) and
+platformagnosticsecuritytokens(PASETO)onRESTfulAPIs,”inProc.
+IEEE Int. Conf. Cryptogr., Informat., Cybersecurity (ICoCICs), Aug.
+2023,pp.15–22. BoxiChen(StudentMember,IEEE)iscurrentlypursuingtheM.S.degreein
+[28] D. Omeiza and J. Owusu-Tweneboah, “Web security investigation bigdataandInternetofThingswithMacaoPolytechnicUniversity,Macau.
+through penetration tests: A case study of an educational institution Hisresearchinterestsincludeblockchainandprivacyprotection.
+portal,”2018,arXiv:1811.01388.
+[29] H. Omotunde and M. Ahmed, “A comprehensive review of security
+measuresindatabasesystems:Assessingauthentication,accesscontrol,
+andbeyond,”MesopotamianJ.CyberSecurity,vol.2023,pp.115–133,
+Aug.2023. Daxin Zhu is the Dean of the School of Computer Science, Quanzhou
+[30] A.Paul,V.Sharma,andO.Olukoya,“SQLinjectionattack:Detection, Normal University, Quanzhou, China. He has published over 60 academic
+prioritization&prevention,”J.Inf.Secur.Appl.,vol.85,Sep.2024,Art. papersinrenownedinternationaljournals,suchasIEEETRANSACTIONSON
+no.103871. IMAGEPROCESSING andTheoreticalComputerScience,withmorethan40
+[31] C. Pelchen, D. A. Jaeger, F. Cheng, and C. Meinel, “The (persis- ofthemindexedbySCIandEI.Hehasledorparticipatedinmorethan20
+tent) threat of weak passwords: Implementation of a semi-automatic scientificresearchprojects,includingFujianProvincialNaturalFundProject,
+password-crackingalgorithm,”inProc.15thInt.Conf.Inf.Secur.Pract. Key Industry-Academia-Research Projects of Fujian Provincial Education
+Exper.,Nov.2019,pp.464–475. Department, and Quanzhou High-Level Talent Program. He has long been
+[32] A. Razaque, N. Shaldanbayeva, B. Alotaibi, M. Alotaibi, A. Murat, engaged in research on industrial internet applications, artificial intelligence
+and A. Alotaibi, “Big data handling approach for unauthorized cloud applications,andbigdatatechnologies.
+computingaccess,”Electronics,vol.11,no.1,p.137,Jan.2022.
+[33] L. N. Reddy and S. S. Neetha, “Analysis on password attacks and its
+prevention,”Int.J.Res.PublicationRev.,vol.5,no.3,pp.4677–4681,
+Mar.2024.
+[34] J. Shi, R. Li, and W. Hou, “A mechanism to resolve the unauthorized Ching-ChunChang(Member,IEEE)receivedthePh.D.degreeincomputer
+access vulnerability caused by permission delegation in blockchain- sciencefromtheUniversityofWarwick,Coventry,U.K.,in2019.
+basedaccesscontrol,”IEEEAccess,vol.8,pp.156027–156042,2020. He is currently a Project Assistant Professor with the National Insti-
+[35] E.Sun,J.Han,Y.Li,andC.Huang,“Apacketcontent-orientedremote tute of Informatics, Chiyoda, Japan. His research interests include artificial
+codeexecutionattackpayloaddetectionmodel,”FutureInternet,vol.16, intelligence, biometrics, cryptography, cybernetics, cybersecurity, forensics,
+no.7,p.235,Jul.2024. information theory, mathematical optimization, steganography, and water-
+[36] R.Vignesh,D.Deepa,S.C.Mana,andB.K.Samhitha,“Securek-NN marking, with over 100 published articles in international journals and
+queryonencryptedclouddatawithmultiplekeys,”J.Phys.,Conf.Ser., conferencesandseveralbestpaperawards.
+vol.1770,May2021,Art.no.012034.
+[37] D.Wuetal.,“Cybersecurityfordigitalmanufacturing,”J.Manuf.Syst.,
+vol.48,pp.3–12,Jul.2018.
+[38] F. Xiao, Z. Yang, J. Allen, G. Yang, G. Williams, and W. Lee,
+“Understanding and mitigating remote code execution vulnerabilities Chin-Chen Chang (Fellow, IEEE) has worked on many different topics
+in cross-platform ecosystem,” in Proc. ACM SIGSAC Conf. Comput. ininformationsecurity,cryptography,andmultimediaimageprocessingand
+Commun.Secur.,Nov.2022,pp.2975–2988. publishedseveralhundredsofpapersininternationalconferencesandjournals
+[39] J. Xu et al., “AutoAttacker: A large language model guided system to and over 30 books. He was cited over 50221 times and has an H-factor of
+implementautomaticcyber-attacks,”2024,arXiv:2403.01038. 103accordingtoGoogleScholar.Severalwell-knownconceptsandalgorithms
+[40] H.L.D.Yanchao.(2020).PoliceHaveLaunchedanInvestigationInto wereadoptedintextbooks.HealsoworkedwiththeNationalScienceCouncil,
+the Suspected Leak of Information About Nearly 20,000 Students At a Ministry of Technology, Ministry of Education, Ministry of Transportation,
+University in Zhengzhou. [Online]. Available: https://www.thepaper.cn/ MinistryofEconomicAffairs,andothergovernmentagenciesonmorethan
+newsDetailforward7754773 100projectsandholds36patents,includingoneinU.S.and21inChina.
+Authorized licensed use limited to: NATIONAL INSTITUTE OF TECHNOLOGY CALICUT. Downloaded on June 19,2026 at 08:31:27 UTC from IEEE Xplore. Restrictions apply.
