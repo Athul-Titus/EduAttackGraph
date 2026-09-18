@@ -1,0 +1,26 @@
+[
+  {
+    "_note": "SYNTHETIC demo knowledge base document — representative of Awesome-POC content",
+    "source": "awesome-poc",
+    "source_path": "Java框架漏洞/RuoYi-弱密码.md",
+    "title": "RuoYi 若依管理系统 默认弱密码漏洞",
+    "category": "O3_WEAK_PASSWORD",
+    "technology": "RuoYi",
+    "framework": "Spring Boot",
+    "description": "RuoYi (若依) is a popular Java-based administrative web platform widely used in Chinese educational institutions and government websites. The system ships with default credentials (admin/admin123) that are frequently not changed after deployment. An attacker can access the administrative backend at /login and authenticate with these credentials.\n\nThe vulnerability is categorized as a weak/default password issue. Upon successful authentication, the attacker gains full administrative access to the application, including user management, system configuration, and potentially file upload functionality.\n\nAffected versions: RuoYi <= 4.7.8\nCVSS Score: 9.8 (Critical)\n\nExploitation steps require only HTTP requests to the login endpoint, no special tooling required.",
+    "remediation": "1. Immediately change all default credentials\n2. Implement strong password policy (minimum 12 characters, complexity requirements)\n3. Enable CAPTCHA on the login page\n4. Implement account lockout after failed login attempts\n5. Enable multi-factor authentication for administrative accounts\n6. Review and audit all user accounts",
+    "similarity_score_demo": 0.8723
+  },
+  {
+    "_note": "SYNTHETIC demo knowledge base document",
+    "source": "awesome-poc",
+    "source_path": "Java框架漏洞/Shiro-未授权访问.md",
+    "title": "Apache Shiro 认证绕过漏洞 (CVE-2010-3863)",
+    "category": "O4_UNAUTHORIZED",
+    "technology": "Apache Shiro",
+    "framework": "Spring Boot",
+    "description": "Apache Shiro authentication framework has a known path traversal vulnerability that allows attackers to bypass authentication by appending a trailing slash or special characters to the URL path. When Shiro is configured with pattern-based authorization, paths like /admin/ may be protected, but /admin/..;/ or /admin// may bypass the check.\n\nThis vulnerability is particularly relevant to educational management systems that use Shiro for role-based access control. A successful bypass allows unauthenticated access to administrative functions.\n\nAffected versions: Shiro <= 1.5.3\nCVSS Score: 7.5 (High)",
+    "remediation": "1. Upgrade Apache Shiro to version 1.5.4 or later\n2. Configure URL normalization in the filter chain\n3. Use Spring Security in addition to Shiro for defense in depth\n4. Audit all protected URL patterns\n5. Implement API gateway-level authentication",
+    "similarity_score_demo": 0.7845
+  }
+]

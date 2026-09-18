@@ -1,0 +1,65 @@
+{
+  "_description": "Demo fingerprint for LLM-EduAttackGraph demo mode",
+  "_note": "This is SYNTHETIC demo data. RuoYi is mentioned in the research paper as a real educational platform.",
+  "_evidence_type": "DEMO — NOT REAL OBSERVED DATA",
+  "target": "localhost:8080",
+  "scan_id": "demo-scan-001",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "port_records": [
+    {
+      "port": 8080,
+      "service": {
+        "port": 8080,
+        "name": "http",
+        "version": "Apache-Coyote/1.1",
+        "product": "Apache Tomcat",
+        "banner": "HTTP/1.1 200 OK\r\nServer: Apache-Coyote/1.1\r\nSet-Cookie: JSESSIONID=abc123; Path=/; HttpOnly",
+        "evidence": {
+          "method": "banner-grab",
+          "server_header": "Apache-Coyote/1.1"
+        }
+      },
+      "url": "http://localhost:8080",
+      "fingerprint": {
+        "url": "http://localhost:8080",
+        "framework": "RuoYi",
+        "cms": null,
+        "server": "Apache Tomcat",
+        "server_version": "8.5.78",
+        "technologies": ["RuoYi", "Spring Boot", "MyBatis"],
+        "headers": {
+          "server": "Apache-Coyote/1.1",
+          "x-powered-by": "Servlet/3.1",
+          "set-cookie": "JSESSIONID=abc123; Path=/; HttpOnly"
+        },
+        "evidence": [
+          "Detected RuoYi pattern: 若依管理系统",
+          "Spring Boot actuator endpoints detected",
+          "MyBatis ORM detected from error messages"
+        ],
+        "status_code": 200
+      },
+      "spark_vulnerability": null
+    },
+    {
+      "port": 3306,
+      "service": {
+        "port": 3306,
+        "name": "mysql",
+        "version": "8.0.32",
+        "product": "MySQL",
+        "banner": "8.0.32\u0000\u0010",
+        "evidence": {"method": "banner-grab"}
+      },
+      "url": null,
+      "fingerprint": null,
+      "spark_vulnerability": null
+    }
+  ],
+  "web_framework": "RuoYi",
+  "web_application": "RuoYi Administrative Platform",
+  "server_software": "Apache Tomcat",
+  "server_version": "8.5.78",
+  "technologies": ["RuoYi", "Spring Boot", "MyBatis", "Shiro"],
+  "cms": null
+}
