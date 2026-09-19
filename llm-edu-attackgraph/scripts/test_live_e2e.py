@@ -11,6 +11,8 @@ from app.services.embeddings.provider import BGEEmbeddingProvider
 from app.services.llm.providers import GroqProvider, LLMOutputParser
 
 def main():
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
     print("\n" + "=" * 60)
     print("LIVE END-TO-END VERIFICATION: FAISS + BGE + GROQ (DEEPSEEK-R1)")
     print("=" * 60)
@@ -70,13 +72,13 @@ Task: Output a valid JSON object strictly matching this schema:
   ]
 }}"""
 
-    response = llm.complete(prompt, system_prompt="You are an expert cybersecurity auditor. Return ONLY a valid JSON object.")
-    print(f"    Live LLM completed! Raw tokens received: {len(response.content)} chars")
+    response_text = llm.complete_sync(prompt, system_prompt="You are an expert cybersecurity auditor. Return ONLY a valid JSON object.")
+    print(f"    Live LLM completed! Raw tokens received: {len(response_text)} chars")
 
     # 5. Structured Parsing & Validation
     print("\n[5] Parsing and validating findings with LLMOutputParser...")
     parser = LLMOutputParser()
-    findings = parser.parse(response.content)
+    findings = parser.parse(response_text)
     print(f"    Successfully parsed {len(findings)} findings:")
     for f in findings:
         print(f"      * [{f.severity}] {f.vulnerability_name} ({f.category})")

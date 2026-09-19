@@ -47,7 +47,12 @@ def build_index(
 ) -> None:
     """
     Build FAISS index from Awesome-POC knowledge base.
-    """
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
     start_time = time.time()
 
     # Configuration

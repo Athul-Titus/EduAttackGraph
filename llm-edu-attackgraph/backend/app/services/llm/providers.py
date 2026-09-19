@@ -102,7 +102,7 @@ class OpenAICompatibleProvider(LLMProvider):
         "Never claim certainty. Always include an uncertainty statement."
     )
 
-    async def complete(self, prompt: str) -> str:
+    async def complete(self, prompt: str, system_prompt: Optional[str] = None) -> str:
         """Send to OpenAI-compatible API and return clean response."""
         try:
             from openai import AsyncOpenAI
@@ -112,10 +112,11 @@ class OpenAICompatibleProvider(LLMProvider):
                 base_url=self.base_url,
             )
 
+            sys_prompt = system_prompt or self.SYSTEM_PROMPT
             response = await client.chat.completions.create(
                 model=self.model,
                 messages=[
-                    {"role": "system", "content": self.SYSTEM_PROMPT},
+                    {"role": "system", "content": sys_prompt},
                     {"role": "user", "content": prompt},
                 ],
                 max_tokens=self.max_tokens,
@@ -129,6 +130,11 @@ class OpenAICompatibleProvider(LLMProvider):
 
         except ImportError:
             raise RuntimeError("openai package required. Install: pip install openai")
+
+    def complete_sync(self, prompt: str, system_prompt: Optional[str] = None) -> str:
+        """Synchronous wrapper for complete()."""
+        import asyncio
+        return asyncio.run(self.complete(prompt, system_prompt=system_prompt))
 
 
 # ==============================================================================
