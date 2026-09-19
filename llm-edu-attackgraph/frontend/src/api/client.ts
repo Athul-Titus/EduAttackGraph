@@ -8,6 +8,14 @@ export const api = axios.create({
   timeout: 30000,
 });
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('eduattack_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 export interface Target {
@@ -138,11 +146,18 @@ export const apiClient = {
   getHealth: () => api.get<HealthStatus>('/api/health').then(r => r.data),
   getConfig: () => api.get('/api/config').then(r => r.data),
 
+  // Auth
+  login: (data: { email: string; password: string }) =>
+    api.post<{ access_token: string; token_type: string; user: { id: string; email: string; role: string } }>('/api/v1/auth/login', data).then(r => r.data),
+  getMe: () =>
+    api.get<{ id: string; email: string; role: string }>('/api/v1/auth/me').then(r => r.data),
+
   // Targets
   listTargets: () => api.get<Target[]>('/api/v1/targets/').then(r => r.data),
   createTarget: (data: { hostname: string; description?: string; authorization_note?: string }) =>
     api.post<Target>('/api/v1/targets/', data).then(r => r.data),
   deleteTarget: (id: string) => api.delete(`/api/v1/targets/${id}`),
+  toggleTargetAuth: (id: string) => api.patch<Target>(`/api/v1/targets/${id}/toggle-auth`).then(r => r.data),
 
   // Scans
   listScans: (targetId?: string) => {
