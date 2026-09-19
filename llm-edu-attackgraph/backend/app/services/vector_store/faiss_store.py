@@ -194,6 +194,8 @@ class FAISSVectorStore:
         self,
         query_vector: np.ndarray,
         k: int = 5,
+        top_k: Optional[int] = None,
+        threshold: Optional[float] = None,
     ) -> List[SearchResult]:
         """
         Search for top-K most similar vectors.
@@ -206,6 +208,8 @@ class FAISSVectorStore:
         if self._index is None:
             raise RuntimeError("FAISS index not loaded. Call load() or build_index() first.")
 
+        effective_k = top_k if top_k is not None else k
+
         # Normalize query vector for cosine similarity
         query_vector = query_vector.astype(np.float32)
         norm = np.linalg.norm(query_vector)
@@ -213,11 +217,15 @@ class FAISSVectorStore:
             query_vector = query_vector / norm
 
         query_2d = query_vector.reshape(1, -1)
-        distances, indices = self._index.search(query_2d, k)
+        distances, indices = self._index.search(query_2d, effective_k)
 
         results = []
         for dist, idx in zip(distances[0], indices[0]):
             if idx == -1:  # FAISS returns -1 for empty slots
+                continue
+
+            sim = float(dist)
+            if threshold is not None and sim < threshold:
                 continue
 
             chunk_meta = self._metadata.id_to_chunk.get(int(idx), {})
@@ -230,7 +238,7 @@ class FAISSVectorStore:
                 technology=chunk_meta.get("technology"),
                 category=chunk_meta.get("category"),
                 chunk_text=chunk_meta.get("chunk_text", ""),
-                similarity_score=float(dist),
+                similarity_score=sim,
                 evidence_type="retrieved",
             ))
 
@@ -247,6 +255,10 @@ class FAISSVectorStore:
     @property
     def embedding_model(self) -> Optional[str]:
         return self._metadata.embedding_model if self._metadata else None
+
+    @property
+    def dimension(self) -> int:
+        return self._metadata.embedding_dimension if self._metadata else 0
 
     def validate_compatibility(self, embedding_model: str, dimension: int) -> None:
         """
