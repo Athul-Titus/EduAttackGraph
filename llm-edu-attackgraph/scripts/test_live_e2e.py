@@ -58,18 +58,14 @@ Matched Historical Knowledge Base Vulnerability:
 
 Task: Output a valid JSON object strictly matching this schema:
 {{
-  "findings": [
-    {{
-      "vulnerability_name": "RuoYi Default Administrative Credentials",
-      "category": "O3_WEAK_PASSWORD",
-      "severity": "CRITICAL",
-      "confidence": 0.95,
-      "affected_component": "RuoYi /login endpoint",
-      "description": "Clear explanation of the risk",
-      "evidence": "RuoYi default credentials admin/admin123",
-      "remediation": "Change default passwords and enforce MFA"
-    }}
-  ]
+  "potential_vulnerability": "RuoYi Default Administrative Credentials",
+  "category": "O3_WEAK_PASSWORD",
+  "affected_technology": "RuoYi / Spring Boot",
+  "severity": "CRITICAL",
+  "evidence": ["Detected RuoYi pattern on port 8080", "Actuator endpoints present"],
+  "analysis": "The target platform appears to be running RuoYi on Tomcat, which is known to ship with default credentials.",
+  "remediation": ["Rotate default administrative credentials", "Implement account lockout policy"],
+  "uncertainty": "Vulnerability is inferred from fingerprinting and requires validation."
 }}"""
 
     response_text = llm.complete_sync(prompt, system_prompt="You are an expert cybersecurity auditor. Return ONLY a valid JSON object.")
@@ -78,14 +74,16 @@ Task: Output a valid JSON object strictly matching this schema:
     # 5. Structured Parsing & Validation
     print("\n[5] Parsing and validating findings with LLMOutputParser...")
     parser = LLMOutputParser()
-    findings = parser.parse(response_text)
-    print(f"    Successfully parsed {len(findings)} findings:")
-    for f in findings:
-        print(f"      * [{f.severity}] {f.vulnerability_name} ({f.category})")
-        print(f"        Component: {f.affected_component}")
-        print(f"        Description: {f.description[:100]}...")
-        print(f"        Validation Required: {f.validation_required}")
-        print(f"        Evidence Type: {f.evidence_type}")
+    analysis = parser.parse(response_text)
+    print("    Successfully parsed LLMAnalysisOutput:")
+    print(f"      * Vulnerability: {analysis.potential_vulnerability}")
+    print(f"      * Category: {analysis.category}")
+    print(f"      * Technology: {analysis.affected_technology}")
+    print(f"      * Severity: {analysis.severity}")
+    print(f"      * Validation Required: {analysis.validation_required}")
+    print(f"      * Evidence Type: {analysis.evidence_type}")
+    if analysis.analysis:
+        print(f"      * Analysis Summary: {analysis.analysis[:120]}...")
 
     print("\n" + "=" * 60)
     print("[SUCCESS] ALL COMPONENTS REAL & VERIFIED END-TO-END!")

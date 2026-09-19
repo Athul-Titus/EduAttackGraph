@@ -93,7 +93,7 @@ class Settings(BaseSettings):
     # Groq (free tier)
     GROQ_API_KEY: Optional[str] = None
     GROQ_BASE_URL: str = "https://api.groq.com/openai/v1"
-    GROQ_MODEL: str = "llama-3.3-70b-versatile"
+    GROQ_MODEL: str = "qwen/qwen3.8-27b"
 
     # NVIDIA NIM (free credits)
     NVIDIA_API_KEY: Optional[str] = None
