@@ -306,7 +306,6 @@ class KnowledgeChunk(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     document = relationship("KnowledgeDocument", back_populates="chunks")
-    retrievals = relationship("Retrieval", back_populates="chunk")
 
     __table_args__ = (
         Index("ix_knowledge_chunks_faiss_id", "faiss_index_id"),
@@ -351,9 +350,6 @@ class Retrieval(Base):
 
     scan = relationship("Scan", back_populates="retrievals")
     fingerprint = relationship("Fingerprint", back_populates="retrievals")
-    chunk = relationship("KnowledgeChunk", back_populates="retrievals",
-                        foreign_keys="[Retrieval.scan_id]",
-                        primaryjoin="false()")  # Many-to-many via JSON results field
 
 
 class Analysis(Base):
