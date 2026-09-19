@@ -95,8 +95,15 @@ class OpenAICompatibleProvider(LLMProvider):
         self.max_tokens = max_tokens
         self.temperature = temperature
 
+    SYSTEM_PROMPT = (
+        "You are a cybersecurity analysis assistant specializing in educational website vulnerabilities. "
+        "You MUST respond ONLY with a valid JSON object — no prose, no markdown, no explanation outside the JSON. "
+        "All findings are POTENTIAL/INFERRED and require human validation. "
+        "Never claim certainty. Always include an uncertainty statement."
+    )
+
     async def complete(self, prompt: str) -> str:
-        """Send to OpenAI-compatible API."""
+        """Send to OpenAI-compatible API and return clean response."""
         try:
             from openai import AsyncOpenAI
 
@@ -108,14 +115,17 @@ class OpenAICompatibleProvider(LLMProvider):
             response = await client.chat.completions.create(
                 model=self.model,
                 messages=[
-                    {"role": "system", "content": "You are a cybersecurity analysis assistant."},
+                    {"role": "system", "content": self.SYSTEM_PROMPT},
                     {"role": "user", "content": prompt},
                 ],
                 max_tokens=self.max_tokens,
                 temperature=self.temperature,
             )
 
-            return response.choices[0].message.content or ""
+            content = response.choices[0].message.content or ""
+            # Strip <think>...</think> blocks (DeepSeek-R1 chain-of-thought via Groq)
+            content = re.sub(r'<think>.*?</think>', '', content, flags=re.DOTALL).strip()
+            return content
 
         except ImportError:
             raise RuntimeError("openai package required. Install: pip install openai")
