@@ -17,8 +17,9 @@ export default function ScanDetail() {
   const { data: scan, isLoading: scanLoading } = useQuery({
     queryKey: ['scan', scanId],
     queryFn: () => apiClient.getScan(scanId!),
-    refetchInterval: (data) => {
-      if (!data || ['completed', 'failed', 'cancelled'].includes(data.status)) return false;
+    refetchInterval: (query) => {
+      const d = query.state.data;
+      if (!d || ['completed', 'failed', 'cancelled'].includes(d.status)) return false;
       return 3000;
     },
   });
@@ -256,7 +257,7 @@ export default function ScanDetail() {
   );
 }
 
-function ScanStatusCard({ scan }: { scan: ReturnType<typeof useQuery<ReturnType<typeof apiClient.getScan>>>['data'] }) {
+function ScanStatusCard({ scan }: { scan: import('../api/client').Scan | undefined }) {
   if (!scan) return null;
   const colors: Record<string, string> = {
     pending: 'var(--text-muted)', running: 'var(--accent-blue)',

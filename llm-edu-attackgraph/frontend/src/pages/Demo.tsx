@@ -4,8 +4,11 @@ import { apiClient } from '../api/client';
 import { FlaskConical, AlertTriangle, Zap, Eye, Cpu, Shield, ChevronDown, ChevronRight } from 'lucide-react';
 
 export default function DemoPage() {
-  const [result, setResult] = useState<Record<string, unknown> | null>(null);
+  const [result, setResult] = useState<unknown>(null);
   const [runError, setRunError] = useState('');
+
+  type DemoRunResult = { _warning?: string; pipeline_stages?: Record<string, unknown>; finding?: { status?: string; disclaimer?: string } };
+  const typedResult = result as DemoRunResult | null;
 
   const { data: categories } = useQuery({ queryKey: ['vulnCats'], queryFn: apiClient.getVulnCategories });
   const { data: demoFP } = useQuery({ queryKey: ['demoFP'], queryFn: apiClient.getDemoFingerprint });
@@ -13,7 +16,7 @@ export default function DemoPage() {
 
   const runMutation = useMutation({
     mutationFn: apiClient.runDemo,
-    onSuccess: (data) => { setResult(data as Record<string, unknown>); setRunError(''); },
+    onSuccess: (data) => { setResult(data as unknown); setRunError(''); },
     onError: () => setRunError('Demo pipeline failed. Is the backend running?'),
   });
 
@@ -56,23 +59,20 @@ export default function DemoPage() {
         </button>
         {runError && <div className="alert alert-danger" style={{ marginTop: 12 }}><AlertTriangle size={14} /> {runError}</div>}
 
-        {result && (
+        {typedResult && (
           <div style={{ marginTop: 20 }}>
             <div className="alert alert-warning" style={{ marginBottom: 16 }}>
               <AlertTriangle size={14} />
-              <strong>{(result as { _warning?: string })._warning as string}</strong>
+              <strong>{typedResult._warning}</strong>
             </div>
-
-            {/* Stage results */}
-            {Object.entries((result as { pipeline_stages: Record<string, unknown> }).pipeline_stages).map(([stage, data]) => (
+            {typedResult.pipeline_stages && Object.entries(typedResult.pipeline_stages).map(([stage, data]) => (
               <DemoStageCard key={stage} stage={stage} data={data as Record<string, unknown>} />
             ))}
-
             <div className="alert alert-info" style={{ marginTop: 16 }}>
               <Shield size={14} />
               <div>
-                <strong>Finding Status: {((result as { finding?: { status?: string } }).finding?.status ?? 'N/A').toUpperCase()}</strong>
-                <br /><span style={{ fontSize: 12 }}>{(result as { finding?: { disclaimer?: string } }).finding?.disclaimer as string}</span>
+                <strong>Finding Status: {(typedResult.finding?.status ?? 'N/A').toUpperCase()}</strong>
+                <br /><span style={{ fontSize: 12 }}>{typedResult.finding?.disclaimer}</span>
               </div>
             </div>
           </div>
