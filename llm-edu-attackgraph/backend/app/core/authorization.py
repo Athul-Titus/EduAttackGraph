@@ -53,7 +53,7 @@ class AuthorizationManager:
         self.mode = mode
         self.allowlist = allowlist or settings.allowed_targets
 
-    def validate_target(self, target: str) -> str:
+    def validate_target(self, target: str, is_admin: bool = False) -> str:
         """
         Validate a target hostname or IP.
 
@@ -68,6 +68,10 @@ class AuthorizationManager:
 
         # Check for obviously malicious input
         self._check_for_injection(target)
+
+        # Authenticated admin has authorization privilege to add and authorize targets
+        if is_admin:
+            return target
 
         # Resolve to IP for SSRF check
         resolved_ip = self._resolve_target(target)

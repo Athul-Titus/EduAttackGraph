@@ -37,11 +37,15 @@ async def lifespan(app: FastAPI):
         demo_mode=settings.is_demo_mode,
     )
 
-    # Create database tables
+    # Create database tables and seed admin
     try:
-        from app.db.session import create_tables
+        from app.db.session import create_tables, AsyncSessionLocal
+        from app.core.auth import auto_seed_admin
         await create_tables()
         log.info("Database tables initialized")
+        async with AsyncSessionLocal() as session:
+            await auto_seed_admin(session)
+            log.info("Admin account verified (titusathul8@gmail.com)")
     except Exception as e:
         log.warning("Database initialization failed", error=str(e))
 
@@ -158,7 +162,8 @@ async def get_config() -> Dict[str, Any]:
 # ==============================================================================
 
 try:
-    from app.api.v1.endpoints import targets, scans, fingerprints, rag, analysis, findings, reports, demo
+    from app.api.v1.endpoints import targets, scans, fingerprints, rag, analysis, findings, reports, demo, auth
+    app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
     app.include_router(targets.router, prefix="/api/v1/targets", tags=["Targets"])
     app.include_router(scans.router, prefix="/api/v1/scans", tags=["Scans"])
     app.include_router(fingerprints.router, prefix="/api/v1/fingerprints", tags=["Fingerprints"])

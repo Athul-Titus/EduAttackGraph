@@ -494,3 +494,17 @@ class AuditEvent(Base):
     __table_args__ = (
         Index("ix_audit_events_timestamp", "timestamp"),
     )
+
+
+class User(Base):
+    """
+    User account model for administrative authentication.
+    """
+    __tablename__ = "users"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    hashed_password = Column(String(255), nullable=False)
+    role = Column(String(50), default="admin", nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
