@@ -39,7 +39,12 @@ htmlcov/
 
 # Vector Stores & Large Models
 *.faiss
+*.bin
 *.pkl
+*.db
+*.sqlite
+*.sqlite3
+faiss_index/
 models/
 cache/
 

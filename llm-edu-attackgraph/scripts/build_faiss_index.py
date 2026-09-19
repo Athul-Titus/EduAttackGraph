@@ -71,10 +71,9 @@ def build_index(
     print("[1/4] Loading Awesome-POC documents...")
     manager = KnowledgeBaseManager(repo_path=kb_path)
 
-    if not os.path.exists(kb_path):
-        print(f"  Awesome-POC not found at '{kb_path}'.")
-        print(f"  Cloning from {settings.AWESOME_POC_REPO}...")
-        manager.clone_awesome_poc()
+    if not os.path.exists(kb_path) and not (kb_path and kb_path.endswith('.json')):
+        print(f"  Awesome-POC raw folder '{kb_path}' not found.")
+        print("  Utilizing local knowledge base dataset (rag/data/samples/demo_knowledge_base.json)...")
 
     docs, chunks = manager.load_and_chunk()
     print(f"  Loaded {len(docs)} documents")
@@ -137,7 +136,7 @@ def build_index(
 
     elapsed = time.time() - start_time
     print(f"\n{'='*60}")
-    print(f"✓ FAISS index built successfully!")
+    print(f"[OK] FAISS index built successfully!")
     print(f"  Vectors stored: {vector_store.num_vectors}")
     print(f"  Dimension: {vectors.shape[1]}")
     print(f"  Index path: {idx_path}")

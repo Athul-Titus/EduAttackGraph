@@ -31,6 +31,8 @@ class LogLevel(str, Enum):
 class AuthorizedTargetMode(str, Enum):
     ALLOWLIST = "allowlist"
     LAB = "lab"
+    LOCALHOST_ONLY = "localhost_only"
+
 
 
 class LLMProvider(str, Enum):
@@ -67,8 +69,8 @@ class Settings(BaseSettings):
     AWESOME_POC_REPO: str = "https://github.com/Threekiii/Awesome-POC.git"
     AWESOME_POC_LOCAL_PATH: str = "./rag/data/raw/awesome-poc"
 
-    # Embedding — Paper: bge-small-zh; Implementation: bge-m3 (multilingual)
-    EMBEDDING_MODEL: str = "BAAI/bge-m3"
+    # Embedding — Paper: bge-small-zh; Implementation: BAAI/bge-small-en-v1.5
+    EMBEDDING_MODEL: str = "BAAI/bge-small-en-v1.5"
     EMBEDDING_DEVICE: str = "cpu"
     EMBEDDING_BATCH_SIZE: int = 32
 

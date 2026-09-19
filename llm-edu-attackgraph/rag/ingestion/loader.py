@@ -394,21 +394,74 @@ class KnowledgeBaseManager:
         self.source = source
         self.repo_path = repo_path or settings.AWESOME_POC_LOCAL_PATH
 
+    def _load_from_json(self, path: str) -> List[ParsedDocument]:
+        """Load documents from a JSON file."""
+        import json
+        with open(path, "r", encoding="utf-8") as f:
+            raw_docs = json.load(f)
+
+        docs = []
+        for item in raw_docs:
+            meta = DocumentMetadata(
+                source=item.get("source", "awesome-poc"),
+                source_path=item.get("source_path", "unknown.md"),
+                title=item.get("title"),
+                category=item.get("category"),
+                technology=item.get("technology"),
+                framework=item.get("framework"),
+                cve_id=item.get("cve_id"),
+            )
+            doc = ParsedDocument(
+                metadata=meta,
+                description=item.get("description", ""),
+                remediation=item.get("remediation"),
+            )
+            docs.append(doc)
+        return docs
+
     def load_and_chunk(self) -> Tuple[List[ParsedDocument], List[TextChunk]]:
         """
         Load all documents and produce text chunks.
+        Supports both raw markdown trees and JSON datasets.
         Returns (documents, chunks) pair.
         """
-        loader = AwesomePOCLoader(self.repo_path)
         chunker = TextChunker()
-
         all_docs = []
         all_chunks = []
 
-        for doc in loader.load_all():
-            all_docs.append(doc)
-            chunks = chunker.chunk_document(doc)
-            all_chunks.extend(chunks)
+        # 1. Check if repo_path is an existing JSON file
+        if self.repo_path and (self.repo_path.endswith(".json") or os.path.isfile(self.repo_path)):
+            docs = self._load_from_json(self.repo_path)
+            for doc in docs:
+                all_docs.append(doc)
+                all_chunks.extend(chunker.chunk_document(doc))
+            return all_docs, all_chunks
+
+        # 2. Check if repo_path is an existing directory with markdown files
+        if self.repo_path and os.path.isdir(self.repo_path):
+            loader = AwesomePOCLoader(self.repo_path)
+            for doc in loader.load_all():
+                all_docs.append(doc)
+                all_chunks.extend(chunker.chunk_document(doc))
+            if all_docs:
+                return all_docs, all_chunks
+
+        # 3. Fallback to sample JSON knowledge base
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        sample_paths = [
+            os.path.join(base_dir, "..", "data", "samples", "demo_knowledge_base.json"),
+            os.path.join(base_dir, "..", "..", "demo_data", "knowledge_base_sample.json"),
+            "./rag/data/samples/demo_knowledge_base.json",
+            "./demo_data/knowledge_base_sample.json",
+        ]
+        for sp in sample_paths:
+            if os.path.exists(sp):
+                docs = self._load_from_json(sp)
+                for doc in docs:
+                    all_docs.append(doc)
+                    all_chunks.extend(chunker.chunk_document(doc))
+                if all_docs:
+                    return all_docs, all_chunks
 
         return all_docs, all_chunks
 

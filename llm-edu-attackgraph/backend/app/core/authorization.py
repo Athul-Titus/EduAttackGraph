@@ -76,8 +76,20 @@ class AuthorizationManager:
             self._check_allowlist(target, resolved_ip)
         elif self.mode == AuthorizedTargetMode.LAB:
             self._check_lab_mode(target, resolved_ip)
+        elif self.mode == AuthorizedTargetMode.LOCALHOST_ONLY:
+            self._check_localhost(target, resolved_ip)
 
         return target
+
+    def _check_localhost(self, target: str, resolved_ip: Optional[str]) -> None:
+        """LOCALHOST_ONLY mode: only loopback addresses permitted."""
+        base = target.split(":")[0].strip("[]")
+        if base in LOOPBACK_ADDRESSES or (resolved_ip and resolved_ip in LOOPBACK_ADDRESSES):
+            return
+        raise AuthorizationError(
+            f"Target '{target}' is not authorized. "
+            "In LOCALHOST_ONLY mode, only 127.0.0.1, localhost, and ::1 are permitted."
+        )
 
     def _check_for_injection(self, target: str) -> None:
         """Check for obvious injection attempts."""
