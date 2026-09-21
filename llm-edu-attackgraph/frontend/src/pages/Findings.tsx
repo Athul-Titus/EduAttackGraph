@@ -4,6 +4,14 @@ import { apiClient, Finding } from '../api/client';
 import { Bug, AlertTriangle, CheckCircle2, XCircle, Clock, Filter } from 'lucide-react';
 
 const STATUS_FILTERS = ['all', 'potential', 'pending_review', 'validated', 'rejected', 'needs_more_evidence'];
+const STATUS_LABELS: Record<string, string> = {
+  all: 'ALL',
+  potential: 'POTENTIAL',
+  pending_review: 'PENDING REVIEW',
+  validated: 'VALIDATED',
+  rejected: 'REJECTED',
+  needs_more_evidence: 'NEEDS MORE EVIDENCE',
+};
 
 export default function Findings() {
   const [statusFilter, setStatusFilter] = useState('all');
@@ -76,7 +84,7 @@ export default function Findings() {
                 display: 'flex', alignItems: 'center', gap: 6,
               }}
             >
-              {s.replace('_', ' ').toUpperCase()}
+              {STATUS_LABELS[s] || s.toUpperCase()}
               <span style={{
                 background: active ? 'rgba(59,130,246,0.3)' : 'rgba(148,163,184,0.2)',
                 borderRadius: 100, padding: '0 6px', fontSize: 11,

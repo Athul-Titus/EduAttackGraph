@@ -1,0 +1,68 @@
+[
+  {
+    "id": "demo-chunk-001",
+    "source": "CVE-2021-44228",
+    "title": "Apache Log4j2 远程代码执行漏洞 (Log4Shell)",
+    "category": "O1_RCE",
+    "technology": "Apache Log4j2",
+    "severity": "critical",
+    "description": "Log4j2 JNDI lookup feature allows remote code execution via crafted log message strings. Affects Log4j2 versions 2.0-beta9 through 2.14.1.",
+    "evidence_type": "retrieved",
+    "_synthetic": true
+  },
+  {
+    "id": "demo-chunk-002",
+    "source": "CVE-2021-43700",
+    "title": "RuoYi 若依管理系统 后台部门管理 SQL注入漏洞",
+    "category": "O2_SQL_INJECTION",
+    "technology": "RuoYi / Spring Boot",
+    "severity": "high",
+    "description": "The /system/dept/edit endpoint in RuoYi management system is vulnerable to SQL injection via the 'orderByColumn' parameter due to improper sanitization of user input before construction of dynamic SQL queries.",
+    "evidence_type": "retrieved",
+    "_synthetic": true
+  },
+  {
+    "id": "demo-chunk-003",
+    "source": "CWE-521",
+    "title": "RuoYi 若依管理系统 默认弱密码漏洞",
+    "category": "O3_WEAK_PASSWORD",
+    "technology": "RuoYi",
+    "severity": "critical",
+    "description": "RuoYi ships with default administrative credentials admin/admin123. These credentials are widely known and trivially exploited. Systems deployed without credential rotation are immediately compromised.",
+    "evidence_type": "retrieved",
+    "_synthetic": true
+  },
+  {
+    "id": "demo-chunk-004",
+    "source": "CVE-2020-1957",
+    "title": "Apache Shiro 路径穿越认证绕过漏洞",
+    "category": "O4_UNAUTHORIZED",
+    "technology": "Apache Shiro",
+    "severity": "high",
+    "description": "Apache Shiro before 1.5.3 allows path traversal in URL-based permission mapping. An attacker can bypass authentication by appending /../ sequences to resource URLs to access protected endpoints.",
+    "evidence_type": "retrieved",
+    "_synthetic": true
+  },
+  {
+    "id": "demo-chunk-005",
+    "source": "CWE-347",
+    "title": "Campus SSO JWT 弱密钥伪造令牌攻击",
+    "category": "O5_TOKEN_TAMPERING",
+    "technology": "Spring Security / JWT",
+    "severity": "critical",
+    "description": "Educational portal SSO systems using weak JWT signing keys (e.g. '123456', 'secret') can be forged by attackers to assume any identity including administrative roles.",
+    "evidence_type": "retrieved",
+    "_synthetic": true
+  },
+  {
+    "id": "demo-chunk-006",
+    "source": "CWE-200",
+    "title": "Spring Boot Actuator 未授权端点敏感信息泄露",
+    "category": "O6_INFO_DISCLOSURE",
+    "technology": "Spring Boot Actuator",
+    "severity": "high",
+    "description": "Spring Boot Actuator endpoints (/actuator/env, /actuator/heapdump, /actuator/mappings) expose sensitive runtime configuration, database credentials, and memory dumps when not properly secured.",
+    "evidence_type": "retrieved",
+    "_synthetic": true
+  }
+]

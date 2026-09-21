@@ -15,6 +15,7 @@ export default function NewScan() {
   const [error, setError] = useState('');
 
   const { data: targets = [] } = useQuery({ queryKey: ['targets'], queryFn: apiClient.listTargets });
+  const authorizedTargets = targets.filter(t => t.authorized);
   const { data: scansData, isLoading } = useQuery({
     queryKey: ['scans'],
     queryFn: () => apiClient.listScans(),
@@ -69,9 +70,12 @@ export default function NewScan() {
               <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
                 Authorized Target *
               </label>
-              {targets.length === 0 ? (
+              {authorizedTargets.length === 0 ? (
                 <div className="alert alert-info">
-                  <span>No targets registered. <Link to="/targets" style={{ color: 'var(--accent-blue)' }}>Register one first →</Link></span>
+                  {targets.length === 0
+                    ? <span>No targets registered. <Link to="/targets" style={{ color: 'var(--accent-blue)' }}>Register one first →</Link></span>
+                    : <span>No authorized targets available. <Link to="/targets" style={{ color: 'var(--accent-blue)' }}>Authorize a target →</Link></span>
+                  }
                 </div>
               ) : (
                 <select
@@ -81,8 +85,8 @@ export default function NewScan() {
                   style={{ cursor: 'pointer' }}
                 >
                   <option value="">Select a target…</option>
-                  {targets.map(t => (
-                    <option key={t.id} value={t.id}>{t.hostname} {t.description ? `— ${t.description}` : ''}</option>
+                  {authorizedTargets.map(t => (
+                    <option key={t.id} value={t.id}>{t.hostname}{t.description ? ` — ${t.description}` : ''}</option>
                   ))}
                 </select>
               )}
@@ -102,7 +106,7 @@ export default function NewScan() {
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={createMutation.isPending || targets.length === 0}
+              disabled={createMutation.isPending || authorizedTargets.length === 0}
             >
               <Play size={14} />
               {createMutation.isPending ? 'Launching…' : 'Start Scan'}

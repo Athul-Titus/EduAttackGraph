@@ -90,15 +90,31 @@ export default function DemoPage() {
           <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12 }}>
             Based on RuoYi (若依) platform — mentioned in the research paper
           </div>
-          {demoFP && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <InfoRow label="Target" value={(demoFP as { target?: string }).target || 'localhost:8080'} mono />
-              <InfoRow label="Framework" value={(demoFP as { web_framework?: string }).web_framework} mono />
-              <InfoRow label="Server" value={(demoFP as { server_software?: string }).server_software} />
-              <InfoRow label="Technologies" value={((demoFP as { technologies?: string[] }).technologies || []).join(', ')} />
-              <InfoRow label="Server Version" value={(demoFP as { server_version?: string }).server_version} mono />
-            </div>
-          )}
+            {demoFP && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <InfoRow label="Target" value={(demoFP as { target?: string }).target || 'localhost:8080'} mono />
+                <InfoRow label="Framework" value={(demoFP as { web_framework?: string }).web_framework} mono />
+                <InfoRow label="Server" value={(demoFP as { server_software?: string }).server_software} />
+                <InfoRow label="Server Version" value={(demoFP as { server_version?: string }).server_version} mono />
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid var(--border)', flexWrap: 'wrap', gap: 6 }}>
+                  <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>Technologies</span>
+                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'flex-end', maxWidth: '70%' }}>
+                    {((demoFP as { technologies?: string[] }).technologies || []).map((tech: string, i: number) => (
+                      <span key={i} style={{ fontSize: 10, background: 'rgba(99,102,241,0.15)', color: 'var(--accent-purple)', borderRadius: 4, padding: '2px 6px', fontFamily: 'monospace', border: '1px solid rgba(99,102,241,0.2)' }}>{tech}</span>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid var(--border)', flexWrap: 'wrap', gap: 6 }}>
+                  <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>Open Ports</span>
+                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                    {((demoFP as { open_ports?: number[] }).open_ports || []).map((port: number, i: number) => (
+                      <span key={i} style={{ fontSize: 10, background: 'rgba(6,182,212,0.1)', color: 'var(--accent-cyan)', borderRadius: 4, padding: '2px 6px', fontFamily: 'monospace', border: '1px solid rgba(6,182,212,0.2)' }}>{port}</span>
+                    ))}
+                  </div>
+                </div>
+                <InfoRow label="Login Page" value={(demoFP as { login_url?: string }).login_url} mono />
+              </div>
+            )}
         </div>
 
         <div className="card">
@@ -111,19 +127,25 @@ export default function DemoPage() {
             Representative Awesome-POC documents (synthetic summaries)
           </div>
           {demoKB && ((demoKB as { documents?: unknown[] }).documents || []).map((doc: unknown, i: number) => {
-            const d = doc as { title?: string; category?: string; technology?: string; similarity_score_demo?: number };
+            const d = doc as { title?: string; category?: string; technology?: string; severity?: string; description?: string };
+            const severityColor: Record<string, string> = { critical: '#ef4444', high: '#f59e0b', medium: '#3b82f6', low: '#6b7280' };
             return (
               <div key={i} style={{ background: 'var(--bg-input)', borderRadius: 10, padding: '10px 12px', border: '1px solid var(--border)', marginBottom: 10 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>{d.title}</div>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 6 }}>{d.title}</div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: d.description ? 8 : 0 }}>
                   <span className="badge badge-retrieved">{d.category}</span>
                   {d.technology && <span style={{ fontSize: 11, color: 'var(--accent-cyan)', fontFamily: 'monospace' }}>{d.technology}</span>}
-                  {d.similarity_score_demo && (
-                    <span style={{ fontSize: 11, color: 'var(--accent-green)', fontFamily: 'monospace' }}>
-                      sim: {d.similarity_score_demo}
+                  {d.severity && (
+                    <span style={{ fontSize: 11, fontWeight: 700, color: severityColor[d.severity] || 'var(--text-muted)', textTransform: 'uppercase' }}>
+                      {d.severity}
                     </span>
                   )}
                 </div>
+                {d.description && (
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                    {d.description}
+                  </div>
+                )}
               </div>
             );
           })}

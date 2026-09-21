@@ -1,0 +1,23 @@
+{
+  "target": "localhost:8080",
+  "web_framework": "RuoYi (若依)",
+  "server_software": "Apache Tomcat",
+  "server_version": "9.0.56",
+  "technologies": ["Spring Boot", "MySQL", "MyBatis", "Shiro", "Redis", "Vue.js"],
+  "http_headers": {
+    "Server": "Apache-Coyote/1.1",
+    "X-Frame-Options": "SAMEORIGIN",
+    "Content-Type": "text/html;charset=UTF-8"
+  },
+  "open_ports": [80, 443, 8080, 3306, 6379],
+  "cms_signatures": ["RuoYi", "ruoyi-framework"],
+  "login_page_detected": true,
+  "login_url": "/login",
+  "api_endpoints": ["/system/user/list", "/system/dept/edit", "/system/role/add"],
+  "javascript_files": ["ruoyi.min.js", "vue.min.js", "element-ui.min.js"],
+  "error_page_leak": "org.springframework.web.servlet.NoHandlerFoundException",
+  "database_banners": ["MySQL 5.7.36", "mysql_native_password"],
+  "evidence_type": "observed",
+  "_synthetic": true,
+  "_note": "This is a SYNTHETIC sample based on RuoYi platform fingerprints referenced in Liu et al., 2026"
+}
