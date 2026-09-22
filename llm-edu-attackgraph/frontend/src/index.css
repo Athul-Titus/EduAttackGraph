@@ -114,6 +114,11 @@ code, pre, .mono {
 .animate-fade-in { animation: fadeIn 0.4s ease forwards; }
 .animate-spin { animation: spin 1s linear infinite; }
 
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
 /* Evidence Type Badges */
 .badge {
   display: inline-flex;

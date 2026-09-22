@@ -8,7 +8,8 @@ import NewScan from './pages/NewScan';
 import ScanDetail from './pages/ScanDetail';
 import Findings from './pages/Findings';
 import DemoPage from './pages/Demo';
-import { Shield, LayoutDashboard, Target, Scan, Bug, FlaskConical, LogIn, LogOut, ShieldCheck } from 'lucide-react';
+import SettingsPage from './pages/Settings';
+import { Shield, LayoutDashboard, Target, Scan, Bug, FlaskConical, LogIn, LogOut, ShieldCheck, Settings } from 'lucide-react';
 
 const qc = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false, staleTime: 10000 } } });
 
@@ -18,6 +19,7 @@ const navItems = [
   { to: '/scans', icon: Scan, label: 'Scans' },
   { to: '/findings', icon: Bug, label: 'Findings' },
   { to: '/demo', icon: FlaskConical, label: 'Demo Mode' },
+  { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
 export default function App() {
@@ -37,6 +39,7 @@ export default function App() {
                 <Route path="/scans/:scanId" element={<ScanDetail />} />
                 <Route path="/findings" element={<Findings />} />
                 <Route path="/demo" element={<DemoPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
               </Routes>
             </main>
           </div>
