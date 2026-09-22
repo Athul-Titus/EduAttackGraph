@@ -184,6 +184,8 @@ export const apiClient = {
   // Reports
   generateReport: (scanId: string, format: 'json' | 'markdown' = 'json') =>
     api.post(`/api/v1/reports/${scanId}/generate`, null, { params: { format } }).then(r => r.data),
+  generateReportMarkdown: (scanId: string) =>
+    api.post(`/api/v1/reports/${scanId}/generate`, null, { params: { format: 'markdown' } }).then(r => r.data),
 
   // Demo
   getDemoInfo: () => api.get('/api/v1/demo/').then(r => r.data),
