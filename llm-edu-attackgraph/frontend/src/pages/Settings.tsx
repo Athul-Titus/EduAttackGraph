@@ -58,12 +58,12 @@ export default function SettingsPage() {
               <StatusRow
                 label="FAISS Index"
                 value={health?.faiss_index_ready ? `Ready (${health.faiss_num_vectors} vectors)` : 'Not Built'}
-                ok={health?.faiss_index_ready}
+                ok={health?.faiss_index_ready ?? null}
               />
               <StatusRow
                 label="Demo Mode"
                 value={health?.demo_mode ? 'Active (synthetic data)' : 'Disabled (production)'}
-                ok={!health?.demo_mode}
+                ok={health?.demo_mode === true ? false : health?.demo_mode === false ? true : null}
                 okColor="var(--accent-green)"
                 failColor="var(--accent-yellow)"
               />
@@ -124,7 +124,7 @@ export default function SettingsPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
               <ConfigRow
                 label="Authorization Mode"
-                value={config?.authorized_target_mode || health?.authorized_target_mode || 'N/A'}
+                value={config?.authorized_target_mode || 'N/A'}
                 mono
               />
               <ConfigRow label="Port Scan Range" value={config?.port_scan_range || 'N/A'} mono />
