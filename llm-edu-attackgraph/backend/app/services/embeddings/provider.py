@@ -5,15 +5,16 @@ Paper: "Each text chunk is then encoded into vector representations using
        the BGE embedding algorithm, specifically the pretrained bge-small-zh
        model from HuggingFace"
 
-Implementation: Uses BAAI/bge-m3 (multilingual) as default.
-The SAME model must be used for both:
-  1. Offline: embedding knowledge base chunks
-  2. Online: embedding runtime fingerprint queries
+Implementation decision (intentional divergence from paper):
+    The paper uses BAAI/bge-small-zh (Chinese-only, 512-dim).
+    This implementation defaults to BAAI/bge-small-en-v1.5 (English, 384-dim)
+    because the Awesome-POC knowledge base is predominantly English-language.
+    Switching to bge-m3 (multilingual, 1024-dim) is possible via EMBEDDING_MODEL
+    env var, but requires rebuilding the FAISS index.
 
-Critical requirement from the paper:
-    vᵢ = BGE(tᵢ)   — knowledge base chunks
-    vⱼ = BGE(tⱼ)   — query vector
-Both must be in the same embedding space.
+    RULE: Whatever model is set in EMBEDDING_MODEL MUST be the same model
+    used both for (1) offline knowledge base indexing and (2) online query embedding.
+    Mismatching models produces nonsense similarity scores.
 """
 
 from __future__ import annotations
@@ -71,11 +72,24 @@ class BGEEmbeddingProvider(EmbeddingProvider):
     """
     BGE embedding provider using sentence-transformers.
 
-    Paper: "pretrained bge-small-zh model from HuggingFace"
-    Implementation: BAAI/bge-m3 (multilingual, same embedding space principle)
+    Paper: "pretrained bge-small-zh model from HuggingFace" (Chinese-only, 512-dim)
+    Implementation default: BAAI/bge-small-en-v1.5 (English, 384-dim)
+
+    Why bge-small-en-v1.5 instead of bge-small-zh:
+        The Awesome-POC knowledge base corpus is predominantly English-language.
+        The Chinese model produces low-quality embeddings for English text,
+        which would make the 0.6 similarity threshold unreliable.
+        bge-small-en-v1.5 provides consistent cosine similarity in the 384-dim
+        embedding space for English text.
+
+    Alternative: Set EMBEDDING_MODEL=BAAI/bge-m3 for full multilingual support
+    (covers 100+ languages, 1024-dim; heavier but more versatile).
+    IMPORTANT: rebuild the FAISS index after changing the model.
 
     The BGE model maps text sequences to fixed-length dense vector representations.
     BGE builds on BERT, learning semantic features through deep neural networks.
+    All vectors are L2-normalized (normalize_embeddings=True) so that
+    IndexFlatIP dot product == cosine similarity.
     """
 
     _instance: Optional[BGEEmbeddingProvider] = None

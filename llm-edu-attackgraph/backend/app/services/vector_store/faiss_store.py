@@ -102,8 +102,22 @@ class FAISSVectorStore:
         Paper: INITFAISSDB() then vector_db.add(embeddings)
 
         Args:
-            vectors: 2D numpy array of shape (n, dimension)
-            chunk_metadata: List of dicts with chunk_id, document_id, source, etc.
+            vectors: 2D numpy array of shape (n, dimension).
+                     MAY be pre-normalized (e.g., from sentence-transformers
+                     with normalize_embeddings=True) or un-normalized.
+                     This method ALWAYS normalizes before insertion to guarantee
+                     that IndexFlatIP computes true cosine similarity.
+
+        IMPORTANT — cosine similarity via IndexFlatIP:
+            IndexFlatIP computes the raw inner product (dot product).
+            Dot product equals cosine similarity ONLY when BOTH vectors are
+            L2-normalized (‖v‖ = 1).  If either the stored or query vector
+            is not normalized, the inner product is proportional to the
+            product of the norms, which makes the 0.6 threshold meaningless.
+
+            We enforce normalization here at insert time.
+            The search() method enforces it at query time.
+            Together they guarantee sim(v, v) == 1.0 for any vector.
         """
         try:
             import faiss
@@ -115,11 +129,31 @@ class FAISSVectorStore:
         if len(vectors) == 0:
             raise ValueError("Cannot build FAISS index from empty vectors.")
 
+        vectors = vectors.astype(np.float32)
         dimension = vectors.shape[1]
+
+        # ── Enforce L2 normalization ────────────────────────────────────────
+        # Even if the caller passes pre-normalized vectors (e.g., from
+        # sentence-transformers with normalize_embeddings=True), we re-apply
+        # normalization so this function is safe regardless of caller.
+        # Vectors with near-zero norm are left as-is (they are semantically
+        # empty and will score near 0 against any query, which is correct).
+        norms = np.linalg.norm(vectors, axis=1, keepdims=True)  # (n, 1)
+        zero_norm_mask = (norms.squeeze() < 1e-10)
+        if zero_norm_mask.any():
+            import warnings
+            warnings.warn(
+                f"{zero_norm_mask.sum()} vectors have near-zero norm and cannot be "
+                "normalized. They will return near-zero similarity against all queries."
+            )
+        # Normalize only non-zero vectors
+        safe_norms = np.where(norms < 1e-10, 1.0, norms)  # avoid div-by-zero
+        vectors = vectors / safe_norms
+        # ── End normalization block ─────────────────────────────────────────
 
         # Inner product index (for normalized vectors = cosine similarity)
         self._index = faiss.IndexFlatIP(dimension)
-        self._index.add(vectors.astype(np.float32))
+        self._index.add(vectors)
 
         # Build metadata mapping
         from datetime import datetime
