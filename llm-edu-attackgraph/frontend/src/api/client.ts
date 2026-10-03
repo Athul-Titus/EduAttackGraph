@@ -168,6 +168,8 @@ export const apiClient = {
     api.post<Scan>('/api/v1/scans/', data).then(r => r.data),
   getScan: (id: string) => api.get<Scan>(`/api/v1/scans/${id}`).then(r => r.data),
   getScanResult: (id: string) => api.get<ScanResult>(`/api/v1/scans/${id}/result`).then(r => r.data),
+  retryScan: (id: string) => api.post<Scan>(`/api/v1/scans/${id}/retry`).then(r => r.data),
+  cancelScan: (id: string) => api.delete(`/api/v1/scans/${id}`),
 
   // Findings
   listFindings: (scanId?: string, status?: string) => {

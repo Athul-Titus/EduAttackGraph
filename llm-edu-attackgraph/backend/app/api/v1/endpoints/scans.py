@@ -217,6 +217,60 @@ async def cancel_scan(scan_id: str, db: AsyncSession = Depends(get_db)):
     scan.status = ScanStatus.CANCELLED
 
 
+@router.post("/{scan_id}/retry", response_model=ScanResponse)
+async def retry_scan(scan_id: str, db: AsyncSession = Depends(get_db)):
+    """
+    Retry a stuck, failed, or orphaned scan.
+
+    Resets the scan to PENDING and fires a new background task immediately.
+    Use this when a scan has been stuck in PENDING/RUNNING for a long time
+    (e.g., after a server restart caused the original BackgroundTask to be lost).
+
+    Also works for FAILED scans — clears the error and re-runs the full pipeline.
+    """
+    result = await db.execute(
+        select(Scan).where(Scan.id == scan_id)
+    )
+    scan = result.scalar_one_or_none()
+    if not scan:
+        raise HTTPException(status_code=404, detail="Scan not found")
+
+    if scan.status == ScanStatus.COMPLETED:
+        raise HTTPException(status_code=400, detail="Scan already completed — create a new scan to re-scan.")
+
+    if scan.status in (ScanStatus.RUNNING, ScanStatus.FINGERPRINTING, ScanStatus.ANALYZING):
+        raise HTTPException(status_code=409, detail="Scan is actively running right now. Wait for it to finish or cancel it first.")
+
+    # Get target hostname
+    t_result = await db.execute(select(Target).where(Target.id == scan.target_id))
+    target = t_result.scalar_one_or_none()
+    if not target:
+        raise HTTPException(status_code=404, detail="Target not found — cannot retry.")
+    if not target.authorized:
+        raise HTTPException(status_code=403, detail="Target is no longer authorized. Re-authorize it in Admin before retrying.")
+
+    # Reset scan state
+    scan.status = ScanStatus.PENDING
+    scan.started_at = None
+    scan.completed_at = None
+    scan.error_message = None
+
+    db.add(AuditEvent(
+        event_type="scan_retried",
+        entity_type="scan",
+        entity_id=scan.id,
+        description=f"Scan manually retried for target {target.hostname}",
+        data={"target_id": target.id, "hostname": target.hostname},
+    ))
+    await db.commit()
+    await db.refresh(scan)
+
+    # Fire pipeline immediately as asyncio task (survives without BackgroundTasks object)
+    asyncio.create_task(run_scan_pipeline(scan_id, target.hostname))
+
+    return scan
+
+
 # ==============================================================================
 # Background scan pipeline runner
 # ==============================================================================
