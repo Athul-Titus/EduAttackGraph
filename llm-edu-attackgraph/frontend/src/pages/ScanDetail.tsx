@@ -130,6 +130,19 @@ export default function ScanDetail() {
     onSuccess: (data) => setReportData(data as Record<string, unknown>),
   });
 
+  const retryMutation = useMutation({
+    mutationFn: () => apiClient.retryScan(scanId!),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['scan', scanId] });
+      qc.invalidateQueries({ queryKey: ['scan-result', scanId] });
+    },
+  });
+
+  // Detect if scan has been stuck in pending for >5 minutes
+  const isStuck = scan && ['pending', 'running', 'fingerprinting', 'analyzing'].includes(scan.status)
+    && scan.created_at
+    && (Date.now() - new Date(scan.created_at).getTime()) > 5 * 60 * 1000;
+
   const downloadReport = (format: 'json' | 'markdown') => {
     if (!reportData) return;
     const content = format === 'json' ? JSON.stringify(reportData, null, 2) : String(reportData);
@@ -193,6 +206,19 @@ export default function ScanDetail() {
               )}
             </>
           )}
+          {/* Retry button — shown for stuck/failed/cancelled scans */}
+          {['pending', 'failed', 'cancelled'].includes(scan.status) && (
+            <button
+              className="btn"
+              style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff', border: 'none', display: 'flex', alignItems: 'center', gap: 6 }}
+              onClick={() => retryMutation.mutate()}
+              disabled={retryMutation.isPending}
+              title="Re-run this scan from scratch (fixes scans stuck after server restart)"
+            >
+              <RefreshCw size={13} style={{ animation: retryMutation.isPending ? 'spin 1s linear infinite' : 'none' }} />
+              {retryMutation.isPending ? 'Retrying…' : 'Retry Scan'}
+            </button>
+          )}
           <button className="btn btn-secondary" onClick={() => qc.invalidateQueries({ queryKey: ['scan', scanId] })}>
             <RefreshCw size={13} />
           </button>
@@ -205,7 +231,33 @@ export default function ScanDetail() {
       {/* Live pipeline progress */}
       <PipelineTimeline status={scan.status} />
 
-      {isRunning && (
+      {/* Stuck scan warning — shown when pending for >5 minutes */}
+      {isStuck && (
+        <div style={{
+          marginTop: 16, padding: '14px 18px', borderRadius: 10,
+          background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.4)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#f59e0b', fontSize: 13 }}>
+            <AlertTriangle size={16} />
+            <span>
+              <strong>Scan appears stuck.</strong> It has been queued for over 5 minutes without starting.
+              This usually happens after a server restart. Click <strong>Retry Scan</strong> to re-queue it.
+            </span>
+          </div>
+          <button
+            className="btn"
+            style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff', border: 'none', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}
+            onClick={() => retryMutation.mutate()}
+            disabled={retryMutation.isPending}
+          >
+            <RefreshCw size={13} style={{ animation: retryMutation.isPending ? 'spin 1s linear infinite' : 'none' }} />
+            {retryMutation.isPending ? 'Retrying…' : 'Retry Scan'}
+          </button>
+        </div>
+      )}
+
+      {isRunning && !isStuck && (
         <div className="alert alert-info" style={{ marginTop: 16, animation: 'pulse 2s ease-in-out infinite' }}>
           <Activity size={14} />
           <span>
@@ -214,6 +266,7 @@ export default function ScanDetail() {
           </span>
         </div>
       )}
+
 
       {scan.status === 'failed' && scan.error_message && (
         <div className="alert alert-danger" style={{ marginTop: 16 }}>
