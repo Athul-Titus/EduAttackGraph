@@ -67,9 +67,61 @@ async def lifespan(app: FastAPI):
             "DEMO MODE ACTIVE — Using synthetic data. Not for real security analysis.",
         )
 
+    # Resume any scans that were PENDING or RUNNING when the server last stopped.
+    # FastAPI BackgroundTasks are in-memory only — a server restart orphans them.
+    try:
+        from app.db.session import AsyncSessionLocal
+        from app.models.models import Scan, ScanStatus, Target
+        from sqlalchemy import select, or_
+        import asyncio
+
+        async with AsyncSessionLocal() as recovery_db:
+            orphaned_q = await recovery_db.execute(
+                select(Scan).where(
+                    or_(
+                        Scan.status == ScanStatus.PENDING,
+                        Scan.status == ScanStatus.RUNNING,
+                        Scan.status == ScanStatus.FINGERPRINTING,
+                        Scan.status == ScanStatus.ANALYZING,
+                    )
+                )
+            )
+            orphaned_scans = orphaned_q.scalars().all()
+
+            if orphaned_scans:
+                log.warning(
+                    "Recovering orphaned scans from previous session",
+                    count=len(orphaned_scans),
+                )
+                for orphan in orphaned_scans:
+                    # Look up hostname
+                    t_q = await recovery_db.execute(
+                        select(Target).where(Target.id == orphan.target_id)
+                    )
+                    t = t_q.scalar_one_or_none()
+                    hostname = t.hostname if t else "unknown"
+
+                    # Reset to PENDING so the pipeline starts clean
+                    orphan.status = ScanStatus.PENDING
+                    orphan.started_at = None
+                    orphan.error_message = None
+                    log.info(
+                        "Requeueing orphaned scan",
+                        scan_id=orphan.id,
+                        hostname=hostname,
+                    )
+                    # Schedule as asyncio background task
+                    from app.api.v1.endpoints.scans import run_scan_pipeline
+                    asyncio.create_task(run_scan_pipeline(orphan.id, hostname))
+
+                await recovery_db.commit()
+    except Exception as e:
+        log.warning("Orphaned scan recovery failed", error=str(e))
+
     yield
 
     log.info("Shutting down LLM-EduAttackGraph")
+
 
 
 # Create FastAPI app
