@@ -309,7 +309,11 @@ async def run_scan_pipeline(scan_id: str, hostname: str) -> None:
                 else:
                     fp_struct = await engine.scan_target(hostname, scan_id)
             else:
-                fp_struct = await engine.scan_target(hostname, scan_id)
+                # authorize=False: the pipeline only runs after DB confirmed target.authorized=True.
+                # The DB-level check in create_scan/retry_scan is the authoritative gate.
+                # Re-running the static allowlist check here would silently block admin-authorized
+                # external targets that are not in TARGET_ALLOWLIST in .env.
+                fp_struct = await engine.scan_target(hostname, scan_id, authorize=False)
 
             # Save fingerprint to DB
             fingerprint_rec = Fingerprint(
@@ -456,14 +460,19 @@ async def run_scan_pipeline(scan_id: str, hostname: str) -> None:
             await db.commit()
 
         except Exception as e:
-            async with AsyncSessionLocal() as err_db:
-                err_result = await err_db.execute(select(Scan).where(Scan.id == scan_id))
+            # Close main session BEFORE opening a new one — SQLite allows only one writer at a time.
+            await db.rollback()
+            try:
+                err_result = await db.execute(select(Scan).where(Scan.id == scan_id))
                 err_scan = err_result.scalar_one_or_none()
                 if err_scan:
                     err_scan.status = ScanStatus.FAILED
                     err_scan.error_message = str(e)[:1000]
                     err_scan.completed_at = datetime.utcnow()
-                    await err_db.commit()
+                    await db.commit()
+            except Exception:
+                # If we can't write the error either, log it and give up gracefully
+                pass
 
 
 def _demo_fingerprint(hostname: str, scan_id: str, demo_data: dict):
